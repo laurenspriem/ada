@@ -1,0 +1,11 @@
+[messages control]
+disable=too-few-public-methods,
+        missing-docstring,
+        invalid-name,
+        no-self-use,
+        no-member,
+        fixme,
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
