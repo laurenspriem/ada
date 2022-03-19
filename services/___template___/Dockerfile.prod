@@ -1,0 +1,20 @@
+FROM python:3.9-slim
+
+# Copy requirements
+COPY requirements.txt /opt/service/requirements.txt
+
+# Copy source code
+COPY src /opt/service/src
+
+# Install requirements
+RUN pip install -r /opt/service/requirements.txt
+
+# Set python path
+ENV PYTHONPATH=/opt/service/src
+
+# Set working directory
+WORKDIR /opt/service
+
+# Run server
+ENTRYPOINT ["gunicorn", "template.__main__:app"]
+CMD ["--bind", "0.0.0.0:8080", "--workers", "2"]

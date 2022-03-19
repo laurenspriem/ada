@@ -1,0 +1,4 @@
+black==22.1.0
+Flask==2.0.3
+functions-framework==3.0.0
+pylint==2.12.2
