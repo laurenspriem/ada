@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "dependencyDashboard": false,
+  "pip_requirements": {
+    "fileMatch": [
+      "(^|\/)functions\/\S*\/requirements.(txt|pip)$",
+      "(^|\/)services\/\S*\/requirements.(txt|pip)$"
+    ]
+  }
+}
