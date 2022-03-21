@@ -1,0 +1,18 @@
+resources:
+  - name: jads-adaassignment-shared-csi-f89d
+    type: gcp-types/sqladmin-v1beta4:instances
+    properties:
+      region: europe-west3
+      databaseVersion: POSTGRES_13
+      settings:
+        tier: db-f1-micro
+        availabilityType: ZONAL
+        dataDiskSizeGb: 10
+        dataDiskType: PD_HDD
+        storageAutoResize: false
+        backupConfiguration:
+          enabled: false
+        insightsConfig:
+          queryInsightsEnabled: true
+          recordClientAddress: true
+          recordApplicationTags: true
