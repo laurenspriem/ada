@@ -5,6 +5,7 @@ from daos.notificationsettings_dao import NotifcationSettingsDAO
 from daos.profile_dao import ProfileDAO
 from daos.shippinginfo_dao import ShippingInfoDAO
 
+
 from db import Session
 
 class User:
@@ -30,9 +31,9 @@ class User:
         user = session.query(UserDAO).filter(UserDAO.username == d_username).first()
 
         if user:
-            si_obj = user.shippinginfo
+            shippinginformation_obj = user.shippinginfo
             profile_obj = user.profile
-            ns_obj = user.notificationsettings
+            notificationsettings_obj = user.notificationsettings
             text_out = {
                 "username:": user.username,
                 "first_name": user.first_name,
@@ -40,16 +41,16 @@ class User:
                 "email": user.email,
                 "is_verified": user.is_verified,
                 "shipping info": {
-                    "street": si_obj.street,
-                    "street_number": si_obj.street_number,
-                    "zip_code": si_obj.zip_code,
-                    "city": si_obj.city
+                    "street": shippinginformation_obj.street,
+                    "street_number": shippinginformation_obj.street_number,
+                    "zip_code": shippinginformation_obj.zip_code,
+                    "city": shippinginformation_obj.city
                 },
                 "notification settings": {
-                    "item_notifications_enabled": ns_obj.item_notifications_enabled,
-                    "bids_notifications_enabled": ns_obj.bids_notifications_enabled,
-                    "chat_notifications_enabled": ns_obj.chat_notifications_enabled,
-                    "news_notifications_enabled": ns_obj.news_notifications_enabled
+                    "item_notifications_enabled": notificationsettings_obj.item_notifications_enabled,
+                    "bids_notifications_enabled": notificationsettings_obj.bids_notifications_enabled,
+                    "chat_notifications_enabled": notificationsettings_obj.chat_notifications_enabled,
+                    "news_notifications_enabled": notificationsettings_obj.news_notifications_enabled
                 },
                 "profile" : {
                     "age": profile_obj.age,
@@ -65,6 +66,15 @@ class User:
         else:
             session.close()
             return jsonify({'message': f'There is no delivery with id {d_username}'}), 404
+
+    @staticmethod
+    def update(d_username, email, password):
+        session = Session()
+        user = session.query(UserDAO).filter(UserDAO.username == d_username)[0]
+        user.email = email
+        user.password = password
+        session.commit()
+        return jsonify({'message': 'The shipping information was updated'}), 200
 
     @staticmethod
     def delete(d_username):

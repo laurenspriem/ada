@@ -2,11 +2,10 @@ from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
 from db import Base
-from daos.user_dao import UserDAO
 
 class ProfileDAO(Base):
     __tablename__ = 'profile'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement = True)
     age = Column(String)
     gender = Column(String)
     height = Column(Integer)

@@ -5,7 +5,7 @@ from db import Base
 
 class NotificationSettingsDAO(Base):
     __tablename__ = 'notificationsettings'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     item_notifications_enabled = Column(Boolean)
     bids_notifications_enabled = Column(Boolean)
     chat_notifications_enabled = Column(Boolean)

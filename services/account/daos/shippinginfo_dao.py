@@ -5,7 +5,7 @@ from db import Base
 
 class ShippingInformationDAO(Base):
     __tablename__ = 'shippinginformation'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     street = Column(String)
     street_number = Column(String)
     zip_code = Column(String)
