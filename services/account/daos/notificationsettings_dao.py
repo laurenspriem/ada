@@ -12,8 +12,7 @@ class NotificationSettingsDAO(Base):
     news_notifications_enabled = Column(Boolean)
 
 
-    def __init__(self, id, item_notifications_enabled, bids_notifications_enabled, chat_notifications_enabled, news_notifications_enabled):
-        self.id = id
+    def __init__(self, item_notifications_enabled=True, bids_notifications_enabled=True, chat_notifications_enabled=True, news_notifications_enabled=True):
         self.item_notifications_enabled = item_notifications_enabled
         self.bids_notifications_enabled = bids_notifications_enabled
         self.chat_notifications_enabled = chat_notifications_enabled

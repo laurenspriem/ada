@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from daos.user_dao import UserDAO
-from daos.notificationsettings_dao import NotifcationSettingsDAO
+from daos.notificationsettings_dao import NotificationSettingsDAO
 from daos.profile_dao import ProfileDAO
 from daos.shippinginfo_dao import ShippingInfoDAO
 
@@ -13,10 +13,8 @@ class User:
     def create(body):
         session = Session()
         user = UserDAO(body['username'], body['first_name'], body['last_name'], body['email'],
-                       body['password'],body['is_verified'],
-                            ShippingInfoDAO(),
-                            ProfileDAO(),
-                            NotifcationSettingsDAO())
+                       body['password'], body['is_verified'], ProfileDAO(), ShippingInfoDAO(), NotificationSettingsDAO())
+
         session.add(user)
         session.commit()
         session.refresh(user)

@@ -3,7 +3,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import database_exists
+from sqlalchemy_utils import database_exists, create_database
 
 # The database URL is provided as an env. variable
 if 'DB_URL' in os.environ:

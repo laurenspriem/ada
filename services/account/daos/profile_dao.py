@@ -13,8 +13,7 @@ class ProfileDAO(Base):
     jeans_size = Column(Integer)
     shoe_size = Column(Integer)
 
-    def __init__(self, id, age, gender, height, shirt_size, jeans_size, shoe_size):
-        self.id = id
+    def __init__(self, age=None, gender=None, height=None, shirt_size=None, jeans_size=None, shoe_size=None):
         self.age = age
         self.gender = gender
         self.height = height
