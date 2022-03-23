@@ -21,7 +21,7 @@ def create_user():
 def get_user(d_username):
     return User.get(d_username)
 
-@app.route('/users/<d_username>/profile', methods=['PUT'])
+@app.route('/users/<d_username>', methods=['PUT'])
 def update_user(d_username):
     email = request.args.get('email')
     password = request.args.get('password')
@@ -29,12 +29,8 @@ def update_user(d_username):
 
 @app.route('/users/<d_username>/profile', methods=['PUT'])
 def update_profile(d_username):
-    age = request.args.get('age')
-    height = request.args.get('height')
-    shirt_size = request.args.get('shirt_size')
-    jeans_size = request.args.get('jeans_size')
-    shoe_size = request.args.get('shoe_size')
-    return Profile.update(d_username, age, height, shirt_size, jeans_size, shoe_size)
+    req_data = request.get_json()
+    return Profile.update(d_username, req_data)
 
 @app.route('/users/<d_username>/shippinginfo', methods=['PUT'])
 def update_shippinginfo(d_username):

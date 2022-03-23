@@ -63,7 +63,7 @@ class User:
             return jsonify(text_out), 200
         else:
             session.close()
-            return jsonify({'message': f'There is no delivery with id {d_username}'}), 404
+            return jsonify({'message': f'There is no user with id {d_username}'}), 404
 
     @staticmethod
     def update(d_username, email, password):
@@ -72,7 +72,7 @@ class User:
         user.email = email
         user.password = password
         session.commit()
-        return jsonify({'message': 'The shipping information was updated'}), 200
+        return jsonify({'message': 'The user information was updated'}), 200
 
     @staticmethod
     def delete(d_username):
@@ -81,6 +81,6 @@ class User:
         session.commit()
         session.close()
         if effected_rows == 0:
-            return jsonify({'message': f'There is no delivery with id {d_username}'}), 404
+            return jsonify({'message': f'There is no user with id {d_username}'}), 404
         else:
-            return jsonify({'message': 'The delivery was removed'}), 200
+            return jsonify({'message': 'The user was removed'}), 200

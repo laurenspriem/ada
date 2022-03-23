@@ -6,11 +6,11 @@ from db import Base
 class ProfileDAO(Base):
     __tablename__ = 'profile'
     id = Column(Integer, primary_key=True, autoincrement = True)
-    age = Column(String)
+    age = Column(Integer)
     gender = Column(String)
     height = Column(Integer)
-    shirt_size = Column(Integer)
-    jeans_size = Column(Integer)
+    shirt_size = Column(String)
+    jeans_size = Column(String)
     shoe_size = Column(Integer)
 
     def __init__(self, age=None, gender=None, height=None, shirt_size=None, jeans_size=None, shoe_size=None):
