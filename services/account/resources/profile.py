@@ -4,6 +4,7 @@ from db import Session
 
 class Profile:
 
+    #update the user profile
     @staticmethod
     def update(d_username, body):
         session = Session()

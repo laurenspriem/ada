@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
 from db import Base
@@ -6,6 +6,7 @@ from daos.notificationsettings_dao import NotificationSettingsDAO
 from daos.profile_dao import ProfileDAO
 from daos.shippinginfo_dao import ShippingInfoDAO
 
+#DAO for the user table
 class UserDAO(Base):
     __tablename__ = 'user'
     username = Column(String, primary_key=True)
@@ -14,21 +15,16 @@ class UserDAO(Base):
     email = Column(String)
     password = Column(String)
     is_verified = Column(Boolean)
-    # reference to status as foreign key relationship. This will be automatically assigned.
-    #profile_id = Column(Integer, ForeignKey('profile.id'))
-    #shippinginfo_id = Column(Integer, ForeignKey('shippinginfo.id'))
-    #notificationsettings_id = Column(Integer, ForeignKey('notificationsettings.id'))
-    # https: // docs.sqlalchemy.org / en / 14 / orm / basic_relationships.html
-    # https: // docs.sqlalchemy.org / en / 14 / orm / backref.html
-    #profile = relationship(ProfileDAO.__name__, foreign_keys=[username], backref="user")
-    #shippinginfo = relationship(ShippingInfoDAO.__name__, foreign_keys=[username], backref="user")
-    #notificationsettings = relationship(NotificationSettingsDAO.__name__, foreign_keys=[username], backref="user")
+
+    #relationship to profile
     profile_id = Column(Integer, ForeignKey('profile.id'))
     profile = relationship(ProfileDAO.__name__, backref=backref("user", uselist=False))
 
+    #relationship to notification settings
     notificationsettings_id = Column(Integer, ForeignKey('notificationsettings.id'))
     notificationsettings = relationship(NotificationSettingsDAO.__name__, backref=backref("user", uselist=False))
 
+    #relationship to shipping information settings
     shippinginfo_id = Column(Integer, ForeignKey('shippinginfo.id'))
     shippinginfo = relationship(ShippingInfoDAO.__name__, backref=backref("user", uselist=False))
 

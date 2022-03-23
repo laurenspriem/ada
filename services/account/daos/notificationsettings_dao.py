@@ -1,8 +1,7 @@
-from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship, backref
-
+from sqlalchemy import Column, Integer, Boolean
 from db import Base
 
+#DAO for the notification settings
 class NotificationSettingsDAO(Base):
     __tablename__ = 'notificationsettings'
     id = Column(Integer, primary_key=True, autoincrement=True)

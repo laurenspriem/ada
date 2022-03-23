@@ -9,6 +9,8 @@ from daos.shippinginfo_dao import ShippingInfoDAO
 from db import Session
 
 class User:
+
+    #create a user
     @staticmethod
     def create(body):
         session = Session()
@@ -21,6 +23,7 @@ class User:
         session.close()
         return jsonify({'user': user.username}), 200
 
+    #get a user
     @staticmethod
     def get(d_username):
         session = Session()
@@ -65,6 +68,7 @@ class User:
             session.close()
             return jsonify({'message': f'There is no user with id {d_username}'}), 404
 
+    #update user information
     @staticmethod
     def update(d_username, email, password):
         session = Session()
@@ -74,6 +78,7 @@ class User:
         session.commit()
         return jsonify({'message': 'The user information was updated'}), 200
 
+    #delete a user
     @staticmethod
     def delete(d_username):
         session = Session()

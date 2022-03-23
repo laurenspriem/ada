@@ -4,14 +4,15 @@ from db import Session
 
 class NotificationSettings:
 
+    #update the notification settings
     @staticmethod
-    def update(d_username, item_not, bids_not, chat_not, news_not):
+    def update(d_username, body):
         session = Session()
         user = session.query(UserDAO).filter(UserDAO.username == d_username)[0]
-        user.notificationsettings.item_notifications_enabled = item_not
-        user.notificationsettings.bids_notifications_enabled = bids_not
-        user.notificationsettings.chat_notifications_enabled = chat_not
-        user.notificationsettings.news_notifications_enabled = news_not
+        user.notificationsettings.item_notifications_enabled = body['item_notifications_enabled']
+        user.notificationsettings.bids_notifications_enabled = body['bids_notifications_enabled']
+        user.notificationsettings.chat_notifications_enabled = body['chat_notifications_enabled']
+        user.notificationsettings.news_notifications_enabled = body['news_notifications_enabled']
 
         session.commit()
         return jsonify({'message': 'The shipping information was updated'}), 200

@@ -1,8 +1,7 @@
-from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship, backref
-
+from sqlalchemy import Column, String, Integer
 from db import Base
 
+#DAO for the profile
 class ProfileDAO(Base):
     __tablename__ = 'profile'
     id = Column(Integer, primary_key=True, autoincrement = True)
