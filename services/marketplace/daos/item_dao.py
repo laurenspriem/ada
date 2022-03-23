@@ -1,11 +1,11 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Float
 from db import Base
 from datetime import datetime
 
 
 class ItemDAO(Base):
     __tablename__ = 'Marketplace'
-    id = Column(Integer, ForeignKey('picture.id_item'), primary_key=True) # I am uncertain about the implementation of the ForeignKey
+    id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String)
     description = Column(String)
     brand = Column(String)
@@ -13,7 +13,7 @@ class ItemDAO(Base):
     size = Column(String)
     color = Column(String)
     state = Column(String)
-    price = Column(float)
+    price = Column(Float)
     status = Column(String)                 # I do not know what we mean by status
     date_created = Column(DateTime)
     date_updated = Column(DateTime)

@@ -21,10 +21,11 @@ def get_item(item_id):
 
 @app.route('/items/<item_id>', methods=['PUT'])
 def update_item(item_id):
-    return Item.update(item_id)
+    req_data = request.get_json()
+    return Item.update(item_id, req_data)
 
 
-@app.route('/items/<d_id>', methods=['DELETE'])
+@app.route('/items/<item_id>', methods=['DELETE'])
 def delete_item(item_id):
     return Item.delete(item_id)
 
