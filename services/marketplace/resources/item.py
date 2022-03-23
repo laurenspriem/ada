@@ -1,7 +1,7 @@
 from matplotlib.pyplot import title
 from flask import jsonify
 from db import Session
-from services.user.daos.item_dao import ItemDAO
+from daos.item_dao import ItemDAO
 
 from datetime import datetime
 from cmath import nan
@@ -12,7 +12,7 @@ class Item:
     def create(body):
         session = Session()
         item = ItemDAO(body['title'], body['description'], body['brand'], body['type'], body['size'],
-            body['color'], body['state'], body['price'], body['status'], datetime.now(), nan)
+            body['color'], body['state'], body['price'], body['status'], datetime.now(), datetime.now())
         session.add(item)
         session.commit()
         session.refresh(item)
@@ -47,18 +47,18 @@ class Item:
             return jsonify({'message': f'There is no item with id {item_id}'}), 404
 
     @staticmethod
-    def update(item_id, title, description, brand, type, size, color, state, price, status):
+    def update(item_id, body):
         session = Session()
         item = session.query(ItemDAO).filter(ItemDAO.id == item_id).first()
-        item.title = title
-        item.description = description
-        item.brand = brand
-        item.type = type
-        item.size = size
-        item.color = color
-        item.state = state
-        item.price = price
-        item.status = status
+        item.title = body['title']
+        item.description = body['description']
+        item.brand = body['brand']
+        item.type = body['type']
+        item.size = body['size']
+        item.color = body['color']
+        item.state = body['state']
+        item.price = body['price']
+        item.status = body['status']
         item.date_updated = datetime.now()
         session.commit()
         return jsonify({'message': f'The item information with id {item_id} is updated'}), 200
