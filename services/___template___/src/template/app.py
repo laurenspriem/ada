@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from sqlalchemy.engine.url import URL
 from werkzeug.exceptions import HTTPException
 
 from template.repositories import ExampleDatabaseRepository, ExamplePredictorRepository, ExampleStorageRepository
@@ -26,13 +27,23 @@ def create_app():
         return {"message": error.name}, error.code
 
     # Create database
-    host = os.getenv("FLASK_DB_HOST")
-    port = os.getenv("FLASK_DB_PORT")
-    user = os.getenv("FLASK_DB_USER")
-    password = os.getenv("FLASK_DB_PASSWORD")
-    name = os.getenv("FLASK_DB_NAME")
+    host = os.getenv("FUNCTION_DB_HOST")
+    port = os.getenv("FUNCTION_DB_PORT")
+    user = os.getenv("FUNCTION_DB_USER")
+    password = os.getenv("FUNCTION_DB_PASSWORD")
+    name = os.getenv("FUNCTION_DB_NAME")
+    socket = os.getenv("FUNCTION_DB_SOCKET")
+    instance = os.getenv("FUNCTION_DB_INSTANCE")
 
-    uri = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
+    uri = URL.create(
+        drivername="postgresql+pg8000",
+        host=host,
+        port=port,
+        username=user,
+        password=password,
+        database=name,
+        query={"unix_sock": f"{socket}/{instance}/.s.PGSQL.5432"} if socket and instance else {}
+    )
     app.config["SQLALCHEMY_DATABASE_URI"] = uri
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
