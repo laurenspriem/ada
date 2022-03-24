@@ -74,7 +74,7 @@ def example_list_endpoint():
 def example_store_endpoint(request):
     interactions = ExampleDatabaseInteractions(database_repository)
 
-    return interactions.store(request.get_json(silent=True))
+    return interactions.store(request.get_json())
 
 
 @functions_framework.errorhandler(Exception)
