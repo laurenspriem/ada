@@ -9,7 +9,7 @@ class Profile:
     def update(d_username, body):
         session = Session()
         user = session.query(UserDAO).filter(UserDAO.username == d_username)[0]
-        user.profile.age = body['age']
+        user.profile.birthday = body['birthday']
         user.profile.height = body['height']
         user.profile.gender = body['gender']
         user.profile.shirt_size = body['shirt_size']

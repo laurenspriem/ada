@@ -24,9 +24,8 @@ def get_user(d_username):
 #update a user
 @app.route('/users/<d_username>', methods=['PUT'])
 def update_user(d_username):
-    email = request.args.get('email')
-    password = request.args.get('password')
-    return User.update(d_username, email, password)
+    req_data = request.get_json()
+    return User.update(d_username, req_data)
 
 #update a user profile
 @app.route('/users/<d_username>/profile', methods=['PUT'])
