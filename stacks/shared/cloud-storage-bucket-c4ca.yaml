@@ -1,0 +1,9 @@
+resources:
+  - name: jads-adaassignment-pictures
+    type: storage.v1.bucket
+    properties:
+      storageClass: STANDARD
+      location: EUROPE-WEST3
+      iamConfiguration:
+        uniformBucketLevelAccess:
+          enabled: false
