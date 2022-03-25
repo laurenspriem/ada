@@ -4,6 +4,6 @@ Flask-SQLAlchemy==2.5.1
 functions-framework==3.0.0
 pg8000==1.24.1
 PyJWT==2.3.0
-pylint==2.12.2
+pylint==2.13.0
 SQLAlchemy==1.4.32
 SQLAlchemy-Utils==0.38.2
