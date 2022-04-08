@@ -5,15 +5,15 @@ from db import Base
 class ProfileDAO(Base):
     __tablename__ = 'profile'
     id = Column(Integer, primary_key=True, autoincrement = True)
-    age = Column(Integer)
+    birthday = Column(String)
     gender = Column(String)
     height = Column(Integer)
     shirt_size = Column(String)
     jeans_size = Column(String)
     shoe_size = Column(Integer)
 
-    def __init__(self, age=None, gender=None, height=None, shirt_size=None, jeans_size=None, shoe_size=None):
-        self.age = age
+    def __init__(self, birthday=None, gender=None, height=None, shirt_size=None, jeans_size=None, shoe_size=None):
+        self.birthday = birthday
         self.gender = gender
         self.height = height
         self.shirt_size = shirt_size
