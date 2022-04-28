@@ -4,7 +4,7 @@ Flask-SQLAlchemy==2.5.1
 gunicorn==20.1.0
 matplotlib==3.5.1
 pandas==1.4.2
-pg8000==1.26.0
+pg8000==1.26.1
 pylint==2.13.7
 requests==2.27.1
 scikit-learn==1.0.2
