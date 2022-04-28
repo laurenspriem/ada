@@ -8,5 +8,5 @@ pg8000==1.26.0
 pylint==2.13.7
 requests==2.27.1
 scikit-learn==1.0.2
-SQLAlchemy==1.4.35
+SQLAlchemy==1.4.36
 SQLAlchemy-Utils==0.38.2
