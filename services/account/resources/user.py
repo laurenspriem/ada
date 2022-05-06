@@ -15,13 +15,12 @@ class User:
     def create(body):
         session = Session()
         user = UserDAO(body['username'], body['first_name'], body['last_name'], body['email'],
-                       body['password'], body['is_verified'], ProfileDAO(), ShippingInfoDAO(), NotificationSettingsDAO())
-
+                       body['password'], body['is_verified'], ProfileDAO(), NotificationSettingsDAO(), ShippingInfoDAO(), PaymentInfoDAO())
         session.add(user)
         session.commit()
         session.refresh(user)
         session.close()
-        return jsonify({'user': user.username}), 200
+        return jsonify({'username': user.username}), 200
 
     #get a user
     @staticmethod
@@ -33,6 +32,7 @@ class User:
 
         if user:
             shippinginformation_obj = user.shippinginfo
+            paymentinformation_obj = user.paymentinfo
             profile_obj = user.profile
             notificationsettings_obj = user.notificationsettings
             text_out = {
@@ -46,6 +46,11 @@ class User:
                     "street_number": shippinginformation_obj.street_number,
                     "zip_code": shippinginformation_obj.zip_code,
                     "city": shippinginformation_obj.city
+                },
+                "payment info": {
+                    "iban": paymentinformation_obj.iban,
+                    "name": paymentinformation_obj.name,
+                    "bank": paymentinformation_obj.bank
                 },
                 "notification settings": {
                     "item_notifications_enabled": notificationsettings_obj.item_notifications_enabled,
