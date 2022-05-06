@@ -1,3 +1,4 @@
+from datetime import date
 from flask import jsonify
 from daos.user_dao import UserDAO
 from db import Session
@@ -13,6 +14,7 @@ class ShippingInfo:
         user.shippinginfo.street_number = body['street_number']
         user.shippinginfo.zip_code = body['zip_code']
         user.shippinginfo.city = body['city']
+        user.shippinginfo.date_updated = date.today()
 
         session.commit()
         return jsonify({'message': 'The shipping information was updated'}), 200
