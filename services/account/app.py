@@ -5,6 +5,7 @@ from resources.notificationsettings import NotificationSettings
 from resources.profile import Profile
 from resources.shippinginfo import ShippingInfo
 from resources.user import User
+from resources.paymentinfo import PaymentInfo
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -44,6 +45,12 @@ def update_shippinginfo(d_username):
 def update_notificationsettings(d_username):
     req_data = request.get_json()
     return NotificationSettings.update(d_username, req_data)
+
+#update a user payment info
+@app.route('/users/<d_username>/paymentinfo', methods=['PUT'])
+def update_paymentinfo(d_username):
+    req_data = request.get_json()
+    return PaymentInfo.update(d_username, req_data)
 
 #delete a user
 @app.route('/users/<d_username>', methods=['DELETE'])
