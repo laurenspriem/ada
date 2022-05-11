@@ -24,11 +24,15 @@ class UserDAO(Base):
     notificationsettings_id = Column(Integer, ForeignKey('notificationsettings.id'))
     notificationsettings = relationship(NotificationSettingsDAO.__name__, backref=backref("user", uselist=False))
 
-    #relationship to shipping information settings
+    #relationship to shipping information
     shippinginfo_id = Column(Integer, ForeignKey('shippinginfo.id'))
     shippinginfo = relationship(ShippingInfoDAO.__name__, backref=backref("user", uselist=False))
 
-    def __init__(self, username, first_name, last_name, email, password, is_verified, profile, shippinginfo, notifcationsettings):
+    #relationship to payment information
+    paymentinfo_id = Column(String, ForeignKey('paymentinfo.id'))
+    paymentinfo = relationship(PaymentInfoDAO.__name__, backref=backref("user", uselist=False))
+
+    def __init__(self, username, first_name, last_name, email, password, is_verified, profile, shippinginfo, paymentinfo, notifcationsettings):
         self.username = username
         self.first_name = first_name
         self.last_name = last_name
@@ -37,5 +41,6 @@ class UserDAO(Base):
         self.is_verified = is_verified
         self.profile = profile
         self.shippinginfo = shippinginfo
+        self.paymentinfo = paymentinfo
         self.notificationsettings = notifcationsettings
 

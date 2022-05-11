@@ -15,13 +15,12 @@ class User:
     def create(body):
         session = Session()
         user = UserDAO(body['username'], body['first_name'], body['last_name'], body['email'],
-                       body['password'], body['is_verified'], ProfileDAO(), ShippingInfoDAO(), NotificationSettingsDAO())
-
+                       body['password'], body['is_verified'], ProfileDAO(), NotificationSettingsDAO(), ShippingInfoDAO(), PaymentInfoDAO())
         session.add(user)
         session.commit()
         session.refresh(user)
         session.close()
-        return jsonify({'user': user.username}), 200
+        return jsonify({'username': user.username}), 200
 
     #get a user
     @staticmethod
@@ -33,6 +32,7 @@ class User:
 
         if user:
             shippinginformation_obj = user.shippinginfo
+            paymentinformation_obj = user.paymentinfo
             profile_obj = user.profile
             notificationsettings_obj = user.notificationsettings
             text_out = {
@@ -47,6 +47,11 @@ class User:
                     "zip_code": shippinginformation_obj.zip_code,
                     "city": shippinginformation_obj.city
                 },
+                "payment info": {
+                    "iban": paymentinformation_obj.iban,
+                    "name": paymentinformation_obj.name,
+                    "bank": paymentinformation_obj.bank
+                },
                 "notification settings": {
                     "item_notifications_enabled": notificationsettings_obj.item_notifications_enabled,
                     "bids_notifications_enabled": notificationsettings_obj.bids_notifications_enabled,
@@ -54,7 +59,7 @@ class User:
                     "news_notifications_enabled": notificationsettings_obj.news_notifications_enabled
                 },
                 "profile" : {
-                    "age": profile_obj.age,
+                    "birthday": profile_obj.birthday,
                     "gender": profile_obj.gender,
                     "height": profile_obj.height,
                     "shirt_size": profile_obj.shirt_size,
@@ -70,11 +75,11 @@ class User:
 
     #update user information
     @staticmethod
-    def update(d_username, email, password):
+    def update(d_username, body):
         session = Session()
         user = session.query(UserDAO).filter(UserDAO.username == d_username)[0]
-        user.email = email
-        user.password = password
+        user.email = body['email']
+        user.password = body['password']
         session.commit()
         return jsonify({'message': 'The user information was updated'}), 200
 
