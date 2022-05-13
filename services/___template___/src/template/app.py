@@ -1,70 +1,156 @@
 import os
 
 from flask import Flask
+from huey import MemoryHuey
+from google.cloud import pubsub
+from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
+from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import HTTPException
 
-from template.repositories import ExampleDatabaseRepository, ExamplePredictorRepository, ExampleStorageRepository
+from template.repositories import (
+    ExampleDatabaseRepository,
+    ExamplePubSubRepository,
+    ExampleWebRepository,
+)
 from template.resources import resources
-from template.db import db
+from template.web import WebClient
+from template.db import Base
+
+
+def _connect_db():
+    # Load config
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+    db_socket = os.getenv("DB_SOCKET")
+    db_instance = os.getenv("DB_INSTANCE")
+    db_name = os.getenv("DB_NAME")
+
+    # Create uri
+    uri = URL.create(
+        drivername="postgresql+pg8000",
+        host=db_host,
+        port=db_port,
+        username=db_user,
+        password=db_password,
+        database=db_name,
+        query={"unix_sock": f"{db_socket}/{db_instance}/.s.PGSQL.5432"}
+        if db_socket and db_instance
+        else {},
+    )
+
+    # Create engine
+    engine = create_engine(uri)
+
+    # Create session
+    session = scoped_session(
+        sessionmaker(
+            autocommit=False,
+            autoflush=False,
+            bind=engine,
+        )
+    )
+
+    # Create tables
+    Base.metadata.create_all(bind=engine)
+
+    return session
+
+
+def _connect_pubsub():
+    # Load config
+    pubsub_project_id = os.getenv("PUBSUB_PROJECT_ID")
+
+    # Create client
+    publisher = pubsub.PublisherClient()
+    subscriber = pubsub.SubscriberClient()
+
+    return pubsub_project_id, publisher, subscriber
+
+
+def _connect_web():
+    # Create client
+    client = WebClient()
+
+    return client
 
 
 def create_app():
     # Create app
-    app = Flask(__name__)
+    flask = Flask(__name__)
 
     # Register resources
-    app.register_blueprint(resources)
+    flask.register_blueprint(resources)
 
     # Register health
-    @app.route("/api/health/")
+    @flask.route("/api/health/")
     def default_health():
         return {"status": "OK"}
 
     # Register errors
-    @app.errorhandler(HTTPException)
+    @flask.errorhandler(HTTPException)
     def default_handler(error):
         return {"message": error.name}, error.code
 
     # Create database
-    host = os.getenv("FUNCTION_DB_HOST")
-    port = os.getenv("FUNCTION_DB_PORT")
-    user = os.getenv("FUNCTION_DB_USER")
-    password = os.getenv("FUNCTION_DB_PASSWORD")
-    name = os.getenv("FUNCTION_DB_NAME")
-    socket = os.getenv("FUNCTION_DB_SOCKET")
-    instance = os.getenv("FUNCTION_DB_INSTANCE")
+    session = _connect_db()
 
-    uri = URL.create(
-        drivername="postgresql+pg8000",
-        host=host,
-        port=port,
-        username=user,
-        password=password,
-        database=name,
-        query={"unix_sock": f"{socket}/{instance}/.s.PGSQL.5432"} if socket and instance else {}
-    )
-    app.config["SQLALCHEMY_DATABASE_URI"] = uri
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # Create pub/sub
+    project_id, publisher, subscriber = _connect_pubsub()
 
-    db.init_app(app)
-    db.create_all(app=app)
+    # Create web
+    client = _connect_web()
 
-    # Get model path
-    model_path = os.getenv("FLASK_MODEL_PATH")
-
-    # Get files path
-    files_path = os.getenv("FLASK_FILES_PATH")
-
-    # Create repositories
+    # Set repositories
     setattr(
-        app,
+        flask,
         "repositories",
         {
-            "database_repository": ExampleDatabaseRepository(db.session),
-            "predictor_repository": ExamplePredictorRepository(model_path),
-            "storage_repository": ExampleStorageRepository(files_path),
+            "database_repository": ExampleDatabaseRepository(session),
+            "pubsub_repository": ExamplePubSubRepository(
+                project_id,
+                publisher,
+                subscriber,
+            ),
+            "web_repository": ExampleWebRepository(client),
         },
     )
 
-    return app
+    return flask
+
+
+def create_worker():
+    # Create worker
+    huey = MemoryHuey()
+
+    # Create database
+    session = _connect_db()
+
+    # Create pub/sub
+    project, publisher, subscriber = _connect_pubsub()
+
+    # Create web
+    client = _connect_web()
+
+    # Set subscriptions
+    setattr(
+        huey,
+        "repositories",
+        {
+            "database_repository": ExampleDatabaseRepository(session),
+            "pubsub_repository": ExamplePubSubRepository(
+                project,
+                publisher,
+                subscriber,
+            ),
+            "web_repository": ExampleWebRepository(client),
+        },
+    )
+
+    return huey
+
+
+app = create_app()
+worker = create_worker()

@@ -1,9 +1,11 @@
 from template.models import Model
 
 
-class ExampleDatabaseInteractions:
+class ExampleInteractions:
     def __init__(self, **repositories):
         self._database_repository = repositories["database_repository"]
+        self._pubsub_repository = repositories["pubsub_repository"]
+        self._web_repository = repositories["web_repository"]
 
     def list(self):
         return [m.to_dict() for m in self._database_repository.list_models()]
@@ -13,25 +15,25 @@ class ExampleDatabaseInteractions:
 
         return self._database_repository.store_model(model).to_dict()
 
+    def pull(self):
+        return self._pubsub_repository.pull(self._pubsub_repository.TEST_TOPIC)
 
-class ExamplePredictorInteractions:
-    def __init__(self, **repositories):
-        self._predictor_repository = repositories["predictor_repository"]
+    def push(self, message):
+        return self._pubsub_repository.push(self._pubsub_repository.TEST_TOPIC, message)
 
-    def create(self, data):
-        prediction = self._predictor_repository.create_prediction(data)
+    def get(self):
+        return self._web_repository.get(
+            self._web_repository.TEST_SERVICE + "/endpoint/",
+        )
 
-        return {"output": float(prediction)}
+    def post(self, data):
+        return self._web_repository.post(
+            self._web_repository.TEST_SERVICE + "/endpoint/",
+            data,
+        )
 
-
-class ExampleStorageInteractions:
-    def __init__(self, **repositories):
-        self._storage_repository = repositories["storage_repository"]
-
-    def load(self, name):
-        return self._storage_repository.load_file(name)
-
-    def store(self, file):
-        name = self._storage_repository.store_file(file)
-
-        return {"name": name}
+    def put(self, data):
+        return self._web_repository.put(
+            self._web_repository.TEST_SERVICE + "/endpoint/",
+            data,
+        )

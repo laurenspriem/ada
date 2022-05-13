@@ -1,4 +1,4 @@
-.PHONY: init run/dev run/prod run/func build/dev build/prod deploy/func stack/list stack/create stack/update stack/delete
+.PHONY: init run/app build/app deploy/app deploy/func stack/list stack/create stack/update stack/delete
 .DEFAULT_GOAL := help
 
 NAMESPACE := ada-team-2
@@ -8,8 +8,6 @@ CLOUD_PROJECT := jads-adaassignment
 CLOUD_REGION := europe-west3
 CLOUD_ACCOUNT := jads-adaassignment-application@jads-adaassignment.iam.gserviceaccount.com
 
-include .env
-export $(shell sed 's/=.*//' .env)
 
 help: ## Show this help
 	@echo "${NAMESPACE}/${NAME}"
@@ -29,32 +27,19 @@ init: ## Initialize the environment
 
 ##
 
-run/dev: ## Run development app
-	docker-compose -p $(subst -,_,$(NAME))_dev -f docker-compose.dev.yml up
+run/app: ## Run app
+	docker-compose -p $(subst -,_,$(NAME)) -f docker-compose.yml up
 
-run/prod: ## Run production app
-	docker-compose -p $(subst -,_,$(NAME))_prod -f docker-compose.prod.yml up
-
-##
-
-run/func: ## Run function
-	functions-framework --target $(target) --source ./functions/$(source)/main.py --host 127.0.0.1 --port 9090 --debug
+build/app: ## Build app
+	docker-compose -p $(subst -,_,$(NAME)) -f docker-compose.yml build
 
 ##
 
-build/dev: ## Build development app
-	docker-compose -p $(subst -,_,$(NAME))_dev -f docker-compose.dev.yml build
-
-build/prod: ## Build production app
-	docker-compose -p $(subst -,_,$(NAME))_prod -f docker-compose.prod.yml build
-
-##
-
-deploy/app:
+deploy/app: ## Deploy app
 	@echo "Error: Not Implemented"
 
-deploy/func:
-	gcloud functions deploy ${CLOUD_PROJECT}-$(subst _,-,$(target)) --region ${CLOUD_REGION}  --service-account ${CLOUD_ACCOUNT} --entry-point $(target) --source ./functions/$(source) --runtime python39 --trigger-http --allow-unauthenticated
+deploy/func: ## Deploy function
+	gcloud functions deploy ${CLOUD_PROJECT}-$(subst _,-,$(target)) --region ${CLOUD_REGION} --service-account ${CLOUD_ACCOUNT} --entry-point $(target) --source ./functions/$(source) --runtime python39 --trigger-http --allow-unauthenticated
 
 ##
 

@@ -382,3 +382,6 @@ $RECYCLE.BIN/
 # Scratch file
 functions/scratch.py
 services/scratch.py
+
+# Credentials
+google-application-credentials.json
