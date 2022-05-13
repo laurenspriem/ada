@@ -11,19 +11,12 @@ Prerequisites:
 * functions-framework version ```3.0.0``` or later
 * make version ```4.2.1``` or later (optional)
 
-### Development
+### App
 
-1. Run ```docker-compose -p fintet_dev -f docker-compose.dev.yml build``` or ```make build/dev``` to build the containers (optional).
-2. Run ```docker-compose -p fintet_dev -f docker-compose.dev.yml up``` or ```make run/dev``` to start the containers.
-3. Run ```functions-framework --target [NAME] --source functions/[FILE]/main.py --host 127.0.0.1 --port 9090 --debug``` or ```make run/func target=[NAME] file=[FILE]``` to start a function.
+1. Run ```docker-compose -p fintet -f docker-compose.yml build``` or ```make build/app``` to build the containers (optional).
+2. Run ```docker-compose -p fintet -f docker-compose.yml up``` or ```make run/app``` to start the containers.
 
 Run ```make init``` to install the requirements of each service on your local machine (optional).
-
-### Production
-
-1. Run ```docker-compose -p fintet_prod -f docker-compose.prod.yml build``` or ```make build/prod``` to build the containers (optional).
-2. Run ```docker-compose -p fintet_prod -f docker-compose.prod.yml up``` or ```make run/prod``` to start the containers.
-3. Run ```functions-framework --target [NAME] --source functions/[FILE]/main.py --host 127.0.0.1 --port 9090 --debug``` or ```make run/func target=[NAME] file=[FILE]``` to start a function.
 
 ### Infrastructure
 
