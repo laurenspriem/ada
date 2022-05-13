@@ -1,10 +1,10 @@
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Float
 from db import Base
-from datetime import datetime
+from datetime import datetime, date
 
 
 class ItemDAO(Base):
-    __tablename__ = 'Marketplace'
+    __tablename__ = 'marketplace'
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String)
     description = Column(String)
@@ -15,10 +15,11 @@ class ItemDAO(Base):
     state = Column(String)
     price = Column(Float)
     status = Column(String)                 # I do not know what we mean by status
+    user_id = Column(Integer)
     date_created = Column(DateTime)
     date_updated = Column(DateTime)
 
-    def __init__(self, title, description, brand, type, size, color, state, price, status, date_created, date_updated):
+    def __init__(self, title=None, description=None, brand=None, type=None, size=None, color=None, state=None, price=None, status=None, user_id=None, date_created=date.today(), date_updated=None):
         self.title = title
         self.description = description
         self.brand = brand
@@ -28,5 +29,6 @@ class ItemDAO(Base):
         self.state = state
         self.price = price
         self.status = status
+        self.user_id = user_id
         self.date_created = date_created    # Is set to current time in item.py
         self.date_updated = date_updated    # Is initialized as nan in item.py
