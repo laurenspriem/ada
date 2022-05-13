@@ -15,9 +15,9 @@ def create_item():
     return Item.create(req_data)
 
 
-@app.route('/items/<d_id>', methods=['GET'])
-def get_item(chat_id):
-    return Item.get(chat_id)
+@app.route('/items/<item_id>', methods=['GET'])
+def get_item(item_id):
+    return Item.get(item_id)
 
 
 @app.route('/items/<item_id>', methods=['PUT'])
