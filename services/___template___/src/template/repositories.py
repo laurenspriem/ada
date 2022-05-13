@@ -1,13 +1,8 @@
-import os
-import io
-import pickle
-import hashlib
+import json
+
+from google.api_core.exceptions import AlreadyExists
 
 from template.models import Model
-
-
-class NotFoundError(Exception):
-    pass
 
 
 class ExampleDatabaseRepository:
@@ -24,42 +19,84 @@ class ExampleDatabaseRepository:
         return model
 
 
-class ExamplePredictorRepository:
-    def __init__(self, path):
-        with open(path, "rb") as handle:
-            self._model = pickle.load(handle)
+class ExamplePubSubRepository:
+    TEST_TOPIC = "test"
 
-    def create_prediction(self, inputs):
-        if not hasattr(self, "_model") or not self._model:
-            raise NotFoundError()
+    def __init__(self, project_id, publisher, subscriber):
+        self._project_id = project_id
+        self._publisher = publisher
+        self._subscriber = subscriber
 
-        return self._model.predict([inputs])[0]
+    def pull(self, topic):
+        topic_path = self._ensure_topic_exists(topic)
+        subscription_path = self._ensure_subscription_exists(topic_path)
 
+        res = self._subscriber.pull(
+            subscription=subscription_path,
+            return_immediately=True,
+            max_messages=1,
+        )
 
-class ExampleStorageRepository:
-    def __init__(self, files_path):
-        self._files_path = files_path
+        if len(res.received_messages) == 0:
+            return []
 
-        self._ensure_exists(files_path)
+        received_message_ids = [m.ack_id for m in res.received_messages]
+        received_message_data = [
+            json.loads(m.message.data.decode("utf-8")) for m in res.received_messages
+        ]
 
-    def load_file(self, name):
-        with open(self._files_path + name, "rb") as handle:
-            return io.BytesIO(handle.read())
+        self._subscriber.acknowledge(
+            subscription=subscription_path,
+            ack_ids=received_message_ids,
+        )
 
-    def store_file(self, file):
-        content = file.read()
-        digest = hashlib.md5(content).hexdigest()
-        extension = file.filename.split(".")[-1]
+        return received_message_data
 
-        name = f"{digest}.{extension}"
+    def push(self, topic, message):
+        topic_path = self._ensure_topic_exists(topic)
 
-        with open(self._files_path + name, "wb") as handle:
-            handle.write(content)
+        res = self._publisher.publish(topic_path, str.encode(json.dumps(message)))
 
-        return name
+        return {"message_id": res.result()}
 
-    def _ensure_exists(self, path):
+    def _ensure_topic_exists(self, topic):
+        topic_path = self._publisher.topic_path(self._project_id, topic)
+
         try:
-            os.makedirs(os.path.dirname(path))
-        except OSError:
+            self._publisher.create_topic(name=topic_path)
+        except AlreadyExists:
             pass
+
+        return topic_path
+
+    def _ensure_subscription_exists(self, topic_path):
+        subscription_path = self._subscriber.subscription_path(
+            self._project_id,
+            f"{topic_path[topic_path.rindex('/')+1:]}-subscription",
+        )
+
+        try:
+            self._subscriber.create_subscription(
+                name=subscription_path,
+                topic=topic_path,
+            )
+        except AlreadyExists:
+            pass
+
+        return subscription_path
+
+
+class ExampleWebRepository:
+    TEST_SERVICE = "http://test:8080/api"
+
+    def __init__(self, client):
+        self._client = client
+
+    def get(self, endpoint):
+        return self._client.get(endpoint)
+
+    def post(self, endpoint, data):
+        return self._client.post(endpoint, data=data)
+
+    def put(self, endpoint, data):
+        return self._client.put(endpoint, data=data)
