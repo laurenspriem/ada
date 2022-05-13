@@ -15,6 +15,6 @@ ENV PYTHONPATH=/opt/service/src
 # Set working directory
 WORKDIR /opt/service
 
-# Run server
-ENTRYPOINT ["gunicorn", "template.__main__:app"]
-CMD ["--bind", "0.0.0.0:8080", "--workers", "2"]
+# Run worker
+ENTRYPOINT ["huey_consumer", "template.__main__.worker"]
+CMD ["--workers", "1", "--worker-type", "thread"]
