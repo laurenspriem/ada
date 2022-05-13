@@ -4,6 +4,6 @@ Flask-SQLAlchemy==2.5.1
 functions-framework==3.0.0
 google-cloud-storage==2.3.0
 pg8000==1.26.1
-pylint==2.13.8
+pylint==2.13.9
 SQLAlchemy==1.4.36
 SQLAlchemy-Utils==0.38.2
