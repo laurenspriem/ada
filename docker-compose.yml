@@ -68,3 +68,43 @@ services:
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+
+  marketplace_app:
+    build:
+      context: ./services/marketplace
+      dockerfile: Dockerfile.app
+    depends_on:
+    - postgres
+    - pubsub
+    environment:
+    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+    - DB_HOST=postgres
+    - DB_PORT=5432
+    - DB_USER=postgres
+    - DB_PASSWORD=postgres
+    - DB_NAME=marketplace
+    - PUBSUB_EMULATOR_HOST=pubsub:8085
+    - PUBSUB_PROJECT_ID=jads-adaassignment
+    volumes:
+    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+    - ./services/marketplace/src:/opt/service/src
+
+  marketplace_worker:
+    build:
+      context: ./services/marketplace
+      dockerfile: Dockerfile.worker
+    depends_on:
+    - postgres
+    - pubsub
+    environment:
+    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+    - DB_HOST=postgres
+    - DB_PORT=5432
+    - DB_USER=postgres
+    - DB_PASSWORD=postgres
+    - DB_NAME=template
+    - PUBSUB_EMULATOR_HOST=pubsub:8085
+    - PUBSUB_PROJECT_ID=jads-adaassignment
+    volumes:
+    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+    - ./services/marketplace/src:/opt/service/src
