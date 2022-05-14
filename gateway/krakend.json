@@ -8,12 +8,12 @@
   "port": 8080,
   "endpoints": [
     {
-      "endpoint": "/items",
+      "endpoint": "/api/items",
       "method": "POST",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/items",
+          "url_pattern": "/api/items",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -33,12 +33,12 @@
       }
     },
     {
-      "endpoint": "/items/{item_id}",
+      "endpoint": "/api/items/{item_id}",
       "method": "GET",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/items/{item_id}",
+          "url_pattern": "/api/items/{item_id}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -50,12 +50,12 @@
       ]
     },
     {
-      "endpoint": "/items/{item_id}",
+      "endpoint": "/api/items/{item_id}",
       "method": "PUT",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/items/{item_id}",
+          "url_pattern": "/api/items/{item_id}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -67,12 +67,12 @@
       ]
     },
     {
-      "endpoint": "/items/{item_id}",
+      "endpoint": "/api/items/{item_id}",
       "method": "DELETE",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/items/{item_id}",
+          "url_pattern": "/api/items/{item_id}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -84,12 +84,12 @@
       ]
     },
     {
-      "endpoint": "/users",
+      "endpoint": "/api/users",
       "method": "POST",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users",
+          "url_pattern": "/api/users",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -101,12 +101,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}",
+      "endpoint": "/api/users/{d_username}",
       "method": "GET",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}",
+          "url_pattern": "/api/users/{d_username}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -118,12 +118,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}",
+      "endpoint": "/api/users/{d_username}",
       "method": "PUT",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}",
+          "url_pattern": "/api/users/{d_username}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -135,12 +135,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}/profile",
+      "endpoint": "/api/users/{d_username}/profile",
       "method": "PUT",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}/profile",
+          "url_pattern": "/api/users/{d_username}/profile",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -152,12 +152,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}/shippinginfo",
+      "endpoint": "/api/users/{d_username}/shippinginfo",
       "method": "PUT",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}/shippinginfo",
+          "url_pattern": "/api/users/{d_username}/shippinginfo",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -169,12 +169,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}/paymentinfo",
+      "endpoint": "/api/users/{d_username}/paymentinfo",
       "method": "PUT",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}/paymentinfo",
+          "url_pattern": "/api/users/{d_username}/paymentinfo",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -186,12 +186,12 @@
       ]
     },
     {
-      "endpoint": "/users/{d_username}",
+      "endpoint": "/api/users/{d_username}",
       "method": "DELETE",
       "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/users/{d_username}",
+          "url_pattern": "/api/users/{d_username}",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
