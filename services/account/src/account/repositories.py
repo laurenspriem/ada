@@ -2,7 +2,13 @@ import json
 
 from google.api_core.exceptions import AlreadyExists
 
-from account.models import User, Profile, NotificationSettings, PaymentInfo, ShippingInfo
+from account.models import (
+    User,
+    Profile,
+    NotificationSettings,
+    PaymentInfo,
+    ShippingInfo,
+)
 
 
 class UserDatabaseRepository:
@@ -31,7 +37,16 @@ class UserDatabaseRepository:
         self._session.commit()
         return d_username
 
-    def update_profile(self, d_username, d_birthday, d_gender, d_height, d_shirt_size, d_jeans_size, d_shoe_size):
+    def update_profile(
+        self,
+        d_username,
+        d_birthday,
+        d_gender,
+        d_height,
+        d_shirt_size,
+        d_jeans_size,
+        d_shoe_size,
+    ):
         user = self.get_user(d_username)
         user.profile.birthday = d_birthday
         user.profile.gender = d_gender
@@ -42,7 +57,9 @@ class UserDatabaseRepository:
         self._session.commit()
         return user
 
-    def update_shippinginfo(self, d_username, d_street, d_street_number, d_zip_code, d_city):
+    def update_shippinginfo(
+        self, d_username, d_street, d_street_number, d_zip_code, d_city
+    ):
         user = self.get_user(d_username)
         user.shippinginfo.street = d_street
         user.shippinginfo.street_number = d_street_number
@@ -51,12 +68,27 @@ class UserDatabaseRepository:
         self._session.commit()
         return user
 
-    def update_notificationsettings(self, d_username, d_item_notifications_enabled, d_bids_notifications_enabled, d_chat_notifications_enabled, d_news_notifications_enabled):
+    def update_notificationsettings(
+        self,
+        d_username,
+        d_item_notifications_enabled,
+        d_bids_notifications_enabled,
+        d_chat_notifications_enabled,
+        d_news_notifications_enabled,
+    ):
         user = self.get_user(d_username)
-        user.notificationsettings.item_notifications_enabled = d_item_notifications_enabled
-        user.notificationsettings.bids_notifications_enabled = d_bids_notifications_enabled
-        user.notificationsettings.chat_notifications_enabled = d_chat_notifications_enabled
-        user.notificationsettings.news_notifications_enabled = d_news_notifications_enabled
+        user.notificationsettings.item_notifications_enabled = (
+            d_item_notifications_enabled
+        )
+        user.notificationsettings.bids_notifications_enabled = (
+            d_bids_notifications_enabled
+        )
+        user.notificationsettings.chat_notifications_enabled = (
+            d_chat_notifications_enabled
+        )
+        user.notificationsettings.news_notifications_enabled = (
+            d_news_notifications_enabled
+        )
         self._session.commit()
         return user
 
@@ -69,10 +101,8 @@ class UserDatabaseRepository:
         return user
 
 
-
-
 class ExamplePubSubRepository:
-    TEST_TOPIC = "test"
+    BLOCK_USER_TOPIC = "fintet-block-user"
 
     def __init__(self, project_id, publisher, subscriber):
         self._project_id = project_id
@@ -136,19 +166,3 @@ class ExamplePubSubRepository:
             pass
 
         return subscription_path
-
-
-class ExampleWebRepository:
-    TEST_SERVICE = "http://test:8080/api"
-
-    def __init__(self, client):
-        self._client = client
-
-    def get(self, endpoint):
-        return self._client.get(endpoint)
-
-    def post(self, endpoint, data):
-        return self._client.post(endpoint, data=data)
-
-    def put(self, endpoint, data):
-        return self._client.put(endpoint, data=data)
