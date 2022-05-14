@@ -5,6 +5,7 @@
   "timeout": "3000ms",
   "cache_ttl": "300s",
   "output_encoding": "json",
+  "port": 8080,
   "endpoints": [
     {
       "endpoint": "/items",
