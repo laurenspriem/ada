@@ -1,20 +1,14 @@
 import os
 
 from flask import Flask
-from huey import MemoryHuey
 from google.cloud import pubsub
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import HTTPException
 
-from account.repositories import (
-    UserDatabaseRepository,
-    ExamplePubSubRepository,
-    ExampleWebRepository,
-)
+from account.repositories import UserDatabaseRepository, ExamplePubSubRepository
 from account.resources import resources
-from account.web import WebClient
 from account.db import Base
 
 
@@ -70,13 +64,6 @@ def _connect_pubsub():
     return pubsub_project_id, publisher, subscriber
 
 
-def _connect_web():
-    # Create client
-    client = WebClient()
-
-    return client
-
-
 def create_app():
     # Create app
     flask = Flask(__name__)
@@ -100,9 +87,6 @@ def create_app():
     # Create pub/sub
     project_id, publisher, subscriber = _connect_pubsub()
 
-    # Create web
-    client = _connect_web()
-
     # Set repositories
     setattr(
         flask,
@@ -114,43 +98,10 @@ def create_app():
                 publisher,
                 subscriber,
             ),
-            "web_repository": ExampleWebRepository(client),
         },
     )
 
     return flask
 
 
-def create_worker():
-    # Create worker
-    huey = MemoryHuey()
-
-    # Create database
-    session = _connect_db()
-
-    # Create pub/sub
-    project, publisher, subscriber = _connect_pubsub()
-
-    # Create web
-    client = _connect_web()
-
-    # Set subscriptions
-    setattr(
-        huey,
-        "repositories",
-        {
-            "database_repository": UserDatabaseRepository(session),
-            "pubsub_repository": ExamplePubSubRepository(
-                project,
-                publisher,
-                subscriber,
-            ),
-            "web_repository": ExampleWebRepository(client),
-        },
-    )
-
-    return huey
-
-
 app = create_app()
-worker = create_worker()
