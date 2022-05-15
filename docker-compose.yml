@@ -8,7 +8,7 @@ services:
       - postgres
       - pubsub
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=postgres
@@ -19,7 +19,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/marketplace/src:/opt/service/src
 
   marketplace_worker:
@@ -30,7 +30,7 @@ services:
       - postgres
       - pubsub
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=postgres
@@ -39,7 +39,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     volumes:
-      - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/marketplace/src:/opt/service/src
 
   postgres:
