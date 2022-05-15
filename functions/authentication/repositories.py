@@ -1,4 +1,3 @@
-# pylint: disable=import-error
 import jwt
 
 from models import User
