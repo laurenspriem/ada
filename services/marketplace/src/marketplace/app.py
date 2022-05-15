@@ -9,9 +9,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import HTTPException
 
 from marketplace.repositories import (
-    ExampleDatabaseRepository,
-    ExamplePubSubRepository,
-    ExampleWebRepository,
+    ItemDatabaseRepository,
+    ItemPubSubRepository,
+    ItemWebRepository,
 )
 from marketplace.resources import resources
 from marketplace.web import WebClient
@@ -108,13 +108,13 @@ def create_app():
         flask,
         "repositories",
         {
-            "database_repository": ExampleDatabaseRepository(session),
-            "pubsub_repository": ExamplePubSubRepository(
+            "database_repository": ItemDatabaseRepository(session),
+            "pubsub_repository": ItemPubSubRepository(
                 project_id,
                 publisher,
                 subscriber,
             ),
-            "web_repository": ExampleWebRepository(client),
+            "web_repository": ItemWebRepository(client),
         },
     )
 
@@ -139,13 +139,13 @@ def create_worker():
         huey,
         "repositories",
         {
-            "database_repository": ExampleDatabaseRepository(session),
-            "pubsub_repository": ExamplePubSubRepository(
+            "database_repository": ItemDatabaseRepository(session),
+            "pubsub_repository": ItemPubSubRepository(
                 project,
                 publisher,
                 subscriber,
             ),
-            "web_repository": ExampleWebRepository(client),
+            "web_repository": ItemWebRepository(client),
         },
     )
 

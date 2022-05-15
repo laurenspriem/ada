@@ -1,13 +1,6 @@
-from huey import crontab
-
-from marketplace.interactions import ExampleInteractions
+from marketplace.interactions import ItemInteractions
 from marketplace.app import worker
 
 
-def example_interactions():
-    return ExampleInteractions(**worker.repositories)
-
-
-@worker.periodic_task(crontab(minute="*"))
-def example_subscribe_task():
-    example_interactions().pull()
+def item_interactions():
+    return ItemInteractions(**worker.repositories)

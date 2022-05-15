@@ -1,27 +1,21 @@
 import sqlalchemy as sa
 from marketplace.db import Base
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Float
-from datetime import datetime, date
-
-
-
-
 
 class Item(Base):
     __tablename__ = "item"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    brand = Column(String, nullable=True)
-    type = Column(String, nullable=True)
-    size = Column(String, nullable=True)
-    color = Column(String, nullable=True)
-    state = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
-    status = Column(String, nullable=False)                 # I do not know what we mean by status
-    user_id = Column(Integer, nullable=False)
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    title = sa.Column(sa.String, nullable=False)
+    description = sa.Column(sa.String, nullable=True)
+    brand = sa.Column(sa.String, nullable=True)
+    type = sa.Column(sa.String, nullable=True)
+    size = sa.Column(sa.String, nullable=True)
+    color = sa.Column(sa.String, nullable=True)
+    state = sa.Column(sa.String, nullable=False)
+    price = sa.Column(sa.Float, nullable=False)
+    status = sa.Column(sa.String, nullable=False)
+    user_id = sa.Column(sa.Integer, nullable=False)
     date_created = sa.Column(
         sa.DateTime,
         server_default=sa.func.now(),
