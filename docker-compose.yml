@@ -62,6 +62,50 @@ services:
     volumes:
       - ./functions/authentication:/opt/function
 
+  upload_picture_func:
+    build:
+      context: ./functions/picture
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=picture
+      - FUNC_TARGET=upload_picture
+      - FUNC_SOURCE=/opt/function/main.py
+      - STORAGE_BUCKET=jads-adaassignment-pictures
+    ports:
+      - 9093:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./functions/picture:/opt/function
+
+  download_picture_func:
+    build:
+      context: ./functions/picture
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=picture
+      - FUNC_TARGET=download_picture
+      - FUNC_SOURCE=/opt/function/main.py
+      - STORAGE_BUCKET=jads-adaassignment-pictures
+    ports:
+      - 9094:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./functions/picture:/opt/function
+
   postgres:
     image: postgres:latest
     environment:
