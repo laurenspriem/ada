@@ -1,8 +1,8 @@
 version: "3.9"
 services:
-  template_app:
+  marketplace_app:
     build:
-      context: ./services/___template___
+      context: ./services/marketplace
       dockerfile: Dockerfile.app
     depends_on:
       - postgres
@@ -13,16 +13,18 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=template
+      - DB_NAME=marketplace
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
+    ports:
+      - 8080:8080
     volumes:
       - ./google-application-credentials.json:/opt/service/google-application-credentials.json
-      - ./services/___template___/src:/opt/service/src
+      - ./services/marketplace/src:/opt/service/src
 
-  template_worker:
+  marketplace_worker:
     build:
-      context: ./services/___template___
+      context: ./services/marketplace
       dockerfile: Dockerfile.worker
     depends_on:
       - postgres
@@ -33,29 +35,12 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=template
+      - DB_NAME=marketplace
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     volumes:
       - ./google-application-credentials.json:/opt/service/google-application-credentials.json
-      - ./services/___template___/src:/opt/service/src
-
-  template_func:
-    build:
-      context: ./functions/___template___
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=template
-      - FUNC_TARGET=example_list_endpoint
-      - FUNC_SOURCE=/opt/function/main.py
-    volumes:
-      - ./functions/___template___:/opt/function
+      - ./services/marketplace/src:/opt/service/src
 
   postgres:
     image: postgres:latest
@@ -68,43 +53,3 @@ services:
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
-
-  marketplace_app:
-    build:
-      context: ./services/marketplace
-      dockerfile: Dockerfile.app
-    depends_on:
-    - postgres
-    - pubsub
-    environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
-    - DB_HOST=postgres
-    - DB_PORT=5432
-    - DB_USER=postgres
-    - DB_PASSWORD=postgres
-    - DB_NAME=marketplace
-    - PUBSUB_EMULATOR_HOST=pubsub:8085
-    - PUBSUB_PROJECT_ID=jads-adaassignment
-    volumes:
-    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
-    - ./services/marketplace/src:/opt/service/src
-
-  marketplace_worker:
-    build:
-      context: ./services/marketplace
-      dockerfile: Dockerfile.worker
-    depends_on:
-    - postgres
-    - pubsub
-    environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
-    - DB_HOST=postgres
-    - DB_PORT=5432
-    - DB_USER=postgres
-    - DB_PASSWORD=postgres
-    - DB_NAME=template
-    - PUBSUB_EMULATOR_HOST=pubsub:8085
-    - PUBSUB_PROJECT_ID=jads-adaassignment
-    volumes:
-    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
-    - ./services/marketplace/src:/opt/service/src
