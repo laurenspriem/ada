@@ -12,7 +12,7 @@ class WebClientError(Exception):
 
 
 class WebClient:
-    def __init__(self, base):
+    def __init__(self, base=""):
         self._base = base
 
     def get(self, resource, raw=False):
