@@ -46,7 +46,7 @@ incoming Pub/Sub Message
 
 ## 2. Structure
 
-The template contains a lot of different files this may seem daunting at first, however, only an understanding of a small subset of these files is required to build services using this template. The sections below contains an explanation for each file, and whether you should work in the file or not.
+The template contains a lot of different files this may seem daunting at first, however, only an understanding of a small subset of these files is required to build services using this template. The sections below contain an explanation for each file, and whether you should work in the file or not.
 
 ### 2.1 Files To Open
 
@@ -102,9 +102,9 @@ The `env` section in the `docker-compose.yml` allows customization of the servic
 
 The `volumes` section in the `docker-compose.yml` file mounts two files and directories in the container:
 
-* `./google-application-credentials.json:/opt/service/google-application-credentials.json`: The credentials for Google Cloud (NEVER COMMIT THIS FILE). In order for Docker to find this file, the `*.json` file should be in the root of the repository with filename: `google-application-credentials.json`.
+* `./google-application-credentials.json:/opt/gcloud/google-application-credentials.json`: The credentials for Google Cloud (NEVER COMMIT THIS FILE). In order for Docker to find this file, the `*.json` file should be in the root of the repository with filename: `google-application-credentials.json`.
 
-* `./services/___template___/src:/opt/service/src`: The source code for the service, allows Flask to automatically reload once code changed.
+* `./services/___template___/src:/opt/service/src`: The source code for the service, allows Flask to automatically reload when code is changed.
 
 To startup the application run the following command: `docker-compose -p fintet -f docker-compose.yml up` in your terminal.
 
@@ -126,7 +126,7 @@ To startup the application run the following command: `docker-compose -p fintet 
 
 7. Remove the code in the service that your not using.
 
-8.  Add a new section to the `docker-compose.yml` file to add to service to the existing infrastructure:
+8.  Add a new section to the `docker-compose.yml` file to add the service to the existing infrastructure:
 
 ```yml
 [YOUR_SERVICE_NAME]_app:
@@ -137,7 +137,7 @@ To startup the application run the following command: `docker-compose -p fintet 
     - postgres
     - pubsub
   environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+    - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
     - DB_HOST=postgres
     - DB_PORT=5432
     - DB_USER=postgres
@@ -146,7 +146,7 @@ To startup the application run the following command: `docker-compose -p fintet 
     - PUBSUB_EMULATOR_HOST=pubsub:8085
     - PUBSUB_PROJECT_ID=jads-adaassignment
   volumes:
-    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+    - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
     - ./services/[YOUR_SERVICE_NAME]/src:/opt/service/src
 
 [YOUR_SERVICE_NAME]_worker:
@@ -157,16 +157,16 @@ To startup the application run the following command: `docker-compose -p fintet 
     - postgres
     - pubsub
   environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+    - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
     - DB_HOST=postgres
     - DB_PORT=5432
     - DB_USER=postgres
     - DB_PASSWORD=postgres
-    - DB_NAME=account
+    - DB_NAME=template
     - PUBSUB_EMULATOR_HOST=pubsub:8085
     - PUBSUB_PROJECT_ID=jads-adaassignment
   volumes:
-    - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+    - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
     - ./services/[YOUR_SERVICE_NAME]/src:/opt/service/src
 ```
 
