@@ -1,6 +1,5 @@
 version: "3.9"
 services:
-
   account_app:
     build:
       context: ./services/account
@@ -9,7 +8,7 @@ services:
       - postgres
       - pubsub
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=google-application-credentials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=postgres
@@ -17,10 +16,8 @@ services:
       - DB_NAME=account
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
-    ports:
-      - 8080:8080
     volumes:
-      - ./google-application-credentials.json:/opt/service/google-application-credentials.json
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/account/src:/opt/service/src
 
   postgres:
