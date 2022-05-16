@@ -11,9 +11,9 @@ def item_interactions():
     return ItemInteractions(**flask.current_app.repositories)
 
 
-@resources.route("/items/<item_id>", methods=["GET"])
-def get_item(item_id):
-    return item_interactions().get(item_id)
+@resources.route("/items/<d_item_id>", methods=["GET"])
+def get_item(d_item_id):
+    return item_interactions().get(d_item_id)
 
 
 @resources.route("/items/list/<user_id>", methods=["GET"])

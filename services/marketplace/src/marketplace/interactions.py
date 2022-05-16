@@ -7,10 +7,10 @@ class ItemInteractions:
         self._pubsub_repository = repositories["pubsub_repository"]
 
     def get(self, item_id):
-        return self._database_repository.get_item(item_id).to_dict()
+        return self._database_repository.get_item(int(item_id)).to_dict()
 
     def getlist(self, user_id):
-        return [i.to_dict() for i in self._database_repository.get_itemlist(user_id)]
+        return [i.to_dict() for i in self._database_repository.get_itemlist(int(user_id))]
 
     def search(self, keyword):
         return [i.to_dict() for i in self._database_repository.search_item(keyword)]
@@ -46,7 +46,7 @@ class ItemInteractions:
         status = data["status"]
 
         return self._database_repository.update_item(
-            item_id,
+            int(item_id),
             title,
             description,
             brand,
@@ -54,10 +54,10 @@ class ItemInteractions:
             size,
             color,
             state,
-            user_id,
-            price,
+            int(user_id),
+            float(price),
             status,
         ).to_dict()
 
     def delete(self, item_id):
-        return self._database_repository.delete_item(item_id)
+        return self._database_repository.delete_item(int(item_id))
