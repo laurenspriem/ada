@@ -162,7 +162,7 @@ To startup the application run the following command: `docker-compose -p fintet 
     - DB_PORT=5432
     - DB_USER=postgres
     - DB_PASSWORD=postgres
-    - DB_NAME=template
+    - DB_NAME=bidding
     - PUBSUB_EMULATOR_HOST=pubsub:8085
     - PUBSUB_PROJECT_ID=jads-adaassignment
   volumes:

@@ -127,7 +127,7 @@ To startup the application run the following command: `docker-compose -p fintet 
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=template
+      - DB_NAME=bidding
       - FUNC_TARGET=[YOUR_FUNCTION_TO_EXECUTE]
       - FUNC_SOURCE=/opt/function/main.py
       - PUBSUB_EMULATOR_HOST=pubsub:8085
