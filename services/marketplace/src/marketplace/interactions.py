@@ -45,7 +45,7 @@ class ItemInteractions:
         price = data["price"]
         status = data["status"]
 
-        return self._database_repository.update_item(
+        item = self._database_repository.update_item(
             int(item_id),
             title,
             description,
@@ -59,5 +59,43 @@ class ItemInteractions:
             status,
         ).to_dict()
 
+        self._pubsub_repository.push(
+            self._pubsub_repository.ITEM_UPDATE_TOPIC,
+            item,
+        )
+
+        return item
+
     def delete(self, item_id):
         return self._database_repository.delete_item(int(item_id))
+
+    def pull_offer_accepted_topic(self):
+        messages = self._pubsub_repository.pull(
+            self._pubsub_repository.OFFER_ACCEPTED_TOPIC,
+        )
+
+        for message in messages:
+            item = self._database_repository.get_item(message["item_id"])
+            
+            
+            
+            status_str = "Sold"
+
+            item = self._database_repository.update_item(
+                int(item.id),
+                item.title,
+                item.description,
+                item.brand,
+                item.type,
+                item.size,
+                item.color,
+                item.state,
+                int(item.user_id),
+                float(item.price),
+                status_str,
+            ).to_dict()
+            
+            self._pubsub_repository.push(
+                self._pubsub_repository.ITEM_UPDATE_TOPIC,
+                item,
+            )

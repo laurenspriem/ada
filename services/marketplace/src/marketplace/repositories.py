@@ -78,11 +78,11 @@ class ItemDatabaseRepository:
 
 
 class ItemPubSubRepository:
-    REFUND_TOPIC = "fintet-refund"
-    ITEM_RECEIVED_TOPIC = "fintet-item-received"
-    ITEM_UPDATE_TOPIC = "fintet-item-update"
-    OFFER_ACCEPTED_TOPIC = "fintet-offer-accepted"
-    TRANSACTION_CANCELLED_TOPIC = "fintet-transaction-cancelled"
+    #REFUND_TOPIC = "fintet-refund"
+    #ITEM_RECEIVED_TOPIC = "fintet-item-received"
+    ITEM_UPDATE_TOPIC = "jads-adaassignment-item-update"
+    OFFER_ACCEPTED_TOPIC = "jads-adaassignment-offer-accepted"
+    #TRANSACTION_CANCELLED_TOPIC = "fintet-transaction-cancelled"
 
     def __init__(self, project_id, publisher, subscriber):
         self._project_id = project_id
