@@ -64,9 +64,21 @@ class CommunicationInteractions:
         )
 
         for message in messages:
-            # TODO(tomdewildt): find chats where item_id == message["item_id"]
-            # TODO(tomdewildt): send message of item update in chat
-            pass
+            chats = self._database_repository.get_chats_for_item(
+                message["id"],  # TODO(tomdewildt): update keys
+            )
+            for chat in chats:
+                message = Message(text="System: Item updated.")
+
+                message = self._database_repository.create_message(
+                    chat,
+                    message,
+                ).to_dict()
+
+                self._pubsub_repository.push(
+                    self._pubsub_repository.MESSAGE_SEND_TOPIC,
+                    message,
+                )
 
     def pull_offer_accepted_topic(self):
         messages = self._pubsub_repository.pull(
@@ -74,9 +86,22 @@ class CommunicationInteractions:
         )
 
         for message in messages:
-            # TODO(tomdewildt): find chats where item_id == message["item_id"] and participant_1_id or participant_2_id == message["user_id"]
-            # TODO(tomdewildt): send message of offer accepted in chat
-            pass
+            chats = self._database_repository.get_chats_for_item_and_user(
+                message["item_id"],  # TODO(tomdewildt): update keys
+                message["user_id"],  # TODO(tomdewildt): update keys
+            )
+            for chat in chats:
+                message = Message(text="System: Offer accepted.")
+
+                message = self._database_repository.create_message(
+                    chat,
+                    message,
+                ).to_dict()
+
+                self._pubsub_repository.push(
+                    self._pubsub_repository.MESSAGE_SEND_TOPIC,
+                    message,
+                )
 
     def pull_user_blocked_topic(self):
         messages = self._pubsub_repository.pull(
@@ -84,6 +109,8 @@ class CommunicationInteractions:
         )
 
         for message in messages:
-            # TODO(tomdewildt): find chats where participant_1_id or participant_2_id == message["user_id"]
-            # TODO(tomdewildt): delete chat
-            pass
+            chats = self._database_repository.get_chats_for_user(
+                message["id"],  # TODO(tomdewildt): update keys
+            )
+            for chat in chats:
+                self._database_repository.delete_chat(chat.id)

@@ -51,7 +51,7 @@ class Chat(Base):
     messages = sa.orm.relationship(
         Message.__name__,
         backref=sa.orm.backref("chat"),
-        cascade="all,delete-orphan",
+        cascade="all,delete",
     )
 
     def to_dict(self):

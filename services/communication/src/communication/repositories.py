@@ -25,6 +25,20 @@ class CommunicationDatabaseRepository:
             )
         )
 
+    def get_chats_for_item(self, item_id):
+        return self._session.query(Chat).filter(Chat.item_id == item_id)
+
+    def get_chats_for_item_and_user(self, item_id, user_id):
+        return self._session.query(Chat).filter(
+            sa.and_(
+                Chat.item_id == item_id,
+                sa.or_(
+                    Chat.participant_1_id == user_id,
+                    Chat.participant_2_id == user_id,
+                ),
+            )
+        )
+
     def create_chat(self, chat):
         self._session.add(chat)
         self._session.commit()
@@ -38,7 +52,8 @@ class CommunicationDatabaseRepository:
         return message
 
     def delete_chat(self, chat_id):
-        self._session.query(Chat).filter(Chat.id == chat_id).delete()
+        chat = self._session.query(Chat).filter(Chat.id == chat_id).first()
+        self._session.delete(chat)
         self._session.commit()
 
         return chat_id
