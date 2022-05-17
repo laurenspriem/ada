@@ -22,6 +22,48 @@ services:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/account/src:/opt/service/src
 
+  communication_app:
+    build:
+      context: ./services/communication
+      dockerfile: Dockerfile.app
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=communication
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    ports:
+      - 8081:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/communication/src:/opt/service/src
+
+  communication_worker:
+    build:
+      context: ./services/communication
+      dockerfile: Dockerfile.worker
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=communication
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/communication/src:/opt/service/src
+
   authenticate_func:
     build:
       context: ./functions/authentication
@@ -111,9 +153,13 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
     volumes:
       - ./scripts/postgres.sh:/docker-entrypoint-initdb.d/postgres.sh
 
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    ports:
+      - 8085:8085

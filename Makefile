@@ -1,4 +1,4 @@
-.PHONY: init run/app build/app deploy/app deploy/func stack/list stack/create stack/update stack/delete
+.PHONY: init run/app build/app clean/app deploy/app deploy/func stack/list stack/create stack/update stack/delete
 .DEFAULT_GOAL := help
 
 NAMESPACE := ada-team-2
@@ -32,6 +32,9 @@ run/app: ## Run app
 
 build/app: ## Build app
 	docker-compose -p $(subst -,_,$(NAME)) -f docker-compose.yml build
+
+clean/app: ## Clean app
+	docker-compose -p $(subst -,_,$(NAME)) -f docker-compose.yml rm
 
 ##
 
