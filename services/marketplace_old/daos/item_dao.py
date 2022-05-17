@@ -4,7 +4,7 @@ from datetime import datetime, date
 
 
 class ItemDAO(Base):
-    __tablename__ = 'marketplace'
+    __tablename__ = 'item'
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String)
     description = Column(String)
