@@ -1,12 +1,9 @@
 black==22.3.0
 Flask==2.1.2
-Flask-SQLAlchemy==2.5.1
 functions-framework==3.0.0
-matplotlib==3.5.2
-pandas==1.4.2
+google-cloud-pubsub==2.12.1
 pg8000==1.26.1
-pylint==2.13.8
+pylint==2.13.9
 requests==2.27.1
-scikit-learn==1.0.2
 SQLAlchemy==1.4.36
 SQLAlchemy-Utils==0.38.2

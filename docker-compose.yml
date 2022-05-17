@@ -1,5 +1,69 @@
 version: "3.9"
 services:
+  account_app:
+    build:
+      context: ./services/account
+      dockerfile: Dockerfile.app
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=account
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    ports:
+      - 8080:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/account/src:/opt/service/src
+
+  communication_app:
+    build:
+      context: ./services/communication
+      dockerfile: Dockerfile.app
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=communication
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    ports:
+      - 8081:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/communication/src:/opt/service/src
+
+  communication_worker:
+    build:
+      context: ./services/communication
+      dockerfile: Dockerfile.worker
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=communication
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/communication/src:/opt/service/src
+
   marketplace_app:
     build:
       context: ./services/marketplace
@@ -17,7 +81,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     ports:
-      - 8080:8080
+      - 8082:8080
     volumes:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/marketplace/src:/opt/service/src
@@ -42,14 +106,102 @@ services:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/marketplace/src:/opt/service/src
 
+  authenticate_func:
+    build:
+      context: ./functions/authentication
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=account
+      - FUNC_TARGET=authenticate
+      - FUNC_SOURCE=/opt/function/main.py
+      - JWT_SECRET=secret
+    ports:
+      - 9091:8080
+    volumes:
+      - ./functions/authentication:/opt/function
+
+  verify_func:
+    build:
+      context: ./functions/authentication
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=account
+      - FUNC_TARGET=verify
+      - FUNC_SOURCE=/opt/function/main.py
+      - JWT_SECRET=secret
+    ports:
+      - 9092:8080
+    volumes:
+      - ./functions/authentication:/opt/function
+
+  upload_picture_func:
+    build:
+      context: ./functions/picture
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=picture
+      - FUNC_TARGET=upload_picture
+      - FUNC_SOURCE=/opt/function/main.py
+      - STORAGE_BUCKET=jads-adaassignment-pictures
+    ports:
+      - 9093:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./functions/picture:/opt/function
+
+  download_picture_func:
+    build:
+      context: ./functions/picture
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=picture
+      - FUNC_TARGET=download_picture
+      - FUNC_SOURCE=/opt/function/main.py
+      - STORAGE_BUCKET=jads-adaassignment-pictures
+    ports:
+      - 9094:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./functions/picture:/opt/function
+
   postgres:
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
     volumes:
       - ./scripts/postgres.sh:/docker-entrypoint-initdb.d/postgres.sh
 
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    ports:
+      - 8085:8085
