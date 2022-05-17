@@ -102,7 +102,7 @@ class UserDatabaseRepository:
 
 
 class ExamplePubSubRepository:
-    BLOCK_USER_TOPIC = "fintet-block-user"
+    USER_BLOCKED_TOPIC = "jads-adaassignment-user-blocked"
 
     def __init__(self, project_id, publisher, subscriber):
         self._project_id = project_id
