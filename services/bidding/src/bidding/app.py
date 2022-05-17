@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import HTTPException
 
 from bidding.repositories import (
-    ExampleDatabaseRepository,
+    BidDatabaseRepository,
     ExamplePubSubRepository,
     ExampleWebRepository,
 )
@@ -108,7 +108,7 @@ def create_app():
         flask,
         "repositories",
         {
-            "database_repository": ExampleDatabaseRepository(session),
+            "database_repository": BidDatabaseRepository(session),
             "pubsub_repository": ExamplePubSubRepository(
                 project_id,
                 publisher,
@@ -139,7 +139,7 @@ def create_worker():
         huey,
         "repositories",
         {
-            "database_repository": ExampleDatabaseRepository(session),
+            "database_repository": BidDatabaseRepository(session),
             "pubsub_repository": ExamplePubSubRepository(
                 project,
                 publisher,

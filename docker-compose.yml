@@ -148,6 +148,29 @@ services:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./functions/picture:/opt/function
 
+
+  bidding_app:
+    build:
+      context: ./services/bidding
+      dockerfile: Dockerfile.app
+    depends_on:
+      - postgres
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=bidding
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+      - PUBSUB_PROJECT_ID=jads-adaassignment
+    ports:
+      - 8082:8080
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./services/bidding/src:/opt/service/src
+
   postgres:
     image: postgres:latest
     environment:

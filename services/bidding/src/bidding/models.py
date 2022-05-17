@@ -7,7 +7,7 @@ class Bid(Base):
     __tablename__ = "bidding"
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    price = sa.Column(sa.Float, nullable=False)
+    price = sa.Column(sa.Integer, nullable=False)
     status = sa.Column(sa.String, nullable=False)
     bid_accepted = sa.Column(sa.Boolean, nullable=False)
     price_accepted = sa.Column(sa.Boolean, nullable=False)

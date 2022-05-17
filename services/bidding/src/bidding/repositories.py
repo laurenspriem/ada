@@ -20,7 +20,7 @@ class BidDatabaseRepository:
         return bid
 
     def update_bid(self, d_id, d_price, d_status, d_bid_accepted, d_price_accepted):
-        bid = self.get_user(d_id)
+        bid = self.get_bid(d_id)
         bid.price = d_price
         bid.status = d_status
         bid.bid_accepted = d_bid_accepted
