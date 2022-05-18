@@ -1,6 +1,6 @@
 import flask
 
-from flask import Blueprint, jsonify
+from flask import Blueprint
 
 from bidding.interactions import BiddingInteractions
 
@@ -24,7 +24,7 @@ def get_bid(d_id):
 
 @resources.route("/bids/<d_id>", methods=["PUT"])
 def update_bid(d_id):
-    return bidding_interactions().update_bid(d_id, flask.request.json).to_dict()
+    return bidding_interactions().update_bid(d_id, flask.request.json)
 
 
 @resources.route("/bids/<d_id>", methods=["DELETE"])
