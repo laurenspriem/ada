@@ -17,7 +17,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     ports:
-      - 8080:8080
+      - 8081:8080
     volumes:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/account/src:/opt/service/src
@@ -61,7 +61,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     ports:
-      - 8081:8080
+      - 8083:8080
     volumes:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/communication/src:/opt/service/src
@@ -103,7 +103,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub:8085
       - PUBSUB_PROJECT_ID=jads-adaassignment
     ports:
-      - 8082:8080
+      - 8084:8080
     volumes:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./services/marketplace/src:/opt/service/src

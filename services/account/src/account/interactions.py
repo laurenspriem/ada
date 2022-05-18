@@ -75,5 +75,10 @@ class AccountInteractions:
         bank = data["bank"]
         return self._database_repository.update_paymentinfo(username, iban, name, bank)
 
+    def block(self, d_username):
+        user = self._database_repository.get_user(d_username).to_dict()
+
+        self._pubsub_repository.push(self._pubsub_repository.USER_BLOCKED_TOPIC, user)
+
     def delete(self, d_username):
         return self._database_repository.delete_user(d_username)
