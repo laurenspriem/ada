@@ -33,11 +33,13 @@ class BidDatabaseRepository:
         self._session.commit()
         return d_id
 
-class ExamplePubSubRepository:
-    TEST_TOPIC = "test"
 
-    def __init__(self, project_id, publisher, subscriber):
+class BidPubSubRepository:
+    OFFER_ACCEPTED_TOPIC = "jads-adaassignment-offer-accepted"
+
+    def __init__(self, project_id, project_name, publisher, subscriber):
         self._project_id = project_id
+        self._project_name = project_name
         self._publisher = publisher
         self._subscriber = subscriber
 
@@ -86,7 +88,7 @@ class ExamplePubSubRepository:
     def _ensure_subscription_exists(self, topic_path):
         subscription_path = self._subscriber.subscription_path(
             self._project_id,
-            f"{topic_path[topic_path.rindex('/')+1:]}-subscription",
+            f"{topic_path[topic_path.rindex('/')+1:]}-{self._project_name}-subscription",
         )
 
         try:
@@ -98,19 +100,3 @@ class ExamplePubSubRepository:
             pass
 
         return subscription_path
-
-
-class ExampleWebRepository:
-    TEST_SERVICE = "http://test:8080/api"
-
-    def __init__(self, client):
-        self._client = client
-
-    def get(self, endpoint):
-        return self._client.get(endpoint)
-
-    def post(self, endpoint, data):
-        return self._client.post(endpoint, data=data)
-
-    def put(self, endpoint, data):
-        return self._client.put(endpoint, data=data)
