@@ -1,4 +1,4 @@
-.PHONY: init run/app build/app clean/app deploy/app deploy/func stack/list stack/create stack/update stack/delete
+.PHONY: init run/app build/app clean/app deploy/app deploy/func-http deploy/func-event stack/list stack/create stack/update stack/delete
 .DEFAULT_GOAL := help
 
 NAMESPACE := ada-team-2
@@ -41,8 +41,11 @@ clean/app: ## Clean app
 deploy/app: ## Deploy app
 	@echo "Error: Not Implemented"
 
-deploy/func: ## Deploy function
+deploy/func-http: ## Deploy function http
 	gcloud functions deploy ${CLOUD_PROJECT}-$(subst _,-,$(target)) --region ${CLOUD_REGION} --service-account ${CLOUD_ACCOUNT} --entry-point $(target) --source ./functions/$(source) --runtime python39 --trigger-http --allow-unauthenticated
+
+deploy/func-event: ## Deploy function event
+	gcloud functions deploy ${CLOUD_PROJECT}-$(subst _,-,$(target)) --region ${CLOUD_REGION} --service-account ${CLOUD_ACCOUNT} --entry-point $(target) --source ./functions/$(source) --runtime python39 --trigger-topic $(topic)
 
 ##
 
