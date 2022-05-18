@@ -147,8 +147,8 @@ class ItemPubSubRepository:
 
 
 class ItemWebRepository:
-    UPLOAD_PICTURE_FUNCTION = "https://europe-west3-jads-adaassignment.cloudfunctions.net/fintet-upload-picture"
-    DOWNLOAD_PICTURE_FUNCTION = "https://europe-west3-jads-adaassignment.cloudfunctions.net/fintet-download-picture"
+    UPLOAD_PICTURE_FUNCTION = "https://europe-west3-jads-adaassignment.cloudfunctions.net/jads-adaassignment-upload-picture"
+    DOWNLOAD_PICTURE_FUNCTION = "https://europe-west3-jads-adaassignment.cloudfunctions.net/jads-adaassignment-download-picture"
 
     def __init__(self, client):
         self._client = client
