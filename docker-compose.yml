@@ -219,20 +219,6 @@ services:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./functions/picture:/opt/function
 
-  notification_func:
-    build:
-      context: ./functions/notification
-      dockerfile: Dockerfile
-    depends_on:
-      - pubsub
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
-      - FUNC_TARGET=pull_topic
-      - FUNC_SOURCE=/opt/function/main.py
-    volumes:
-      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
-      - ./functions/notification:/opt/function
-
   postgres:
     image: postgres:latest
     environment:
