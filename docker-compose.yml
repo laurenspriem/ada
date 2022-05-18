@@ -1,18 +1,12 @@
 version: "3.9"
 services:
-
-### API GATEWAY ###
   api_gatway:
     image: devopsfaith/krakend:2.0.0
-    container_name: api_gatway_ct
     volumes:
       - ./gateway:/etc/krakend/
-    # depends_on:
-    #   - account_app
     ports:
-      - "8080:8080"
+      - 8080:8080
 
-### MICROSERVICES ###
   account_app:
     build:
       context: ./services/account
@@ -225,6 +219,20 @@ services:
       - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
       - ./functions/picture:/opt/function
 
+  notification_func:
+    build:
+      context: ./functions/notification
+      dockerfile: Dockerfile
+    depends_on:
+      - pubsub
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/gcloud/google-application-credentials.json
+      - FUNC_TARGET=pull_topic
+      - FUNC_SOURCE=/opt/function/main.py
+    volumes:
+      - ./google-application-credentials.json:/opt/gcloud/google-application-credentials.json
+      - ./functions/notification:/opt/function
+
   postgres:
     image: postgres:latest
     environment:
@@ -235,7 +243,6 @@ services:
     volumes:
       - ./scripts/postgres.sh:/docker-entrypoint-initdb.d/postgres.sh
 
-### PUBSUB ###
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
