@@ -109,8 +109,6 @@ class CommunicationInteractions:
         )
 
         for message in messages:
-            chats = self._database_repository.get_chats_for_user(
-                message["id"],  # TODO(tomdewildt): update keys
-            )
+            chats = self._database_repository.get_chats_for_user(message["id"])
             for chat in chats:
                 self._database_repository.delete_chat(chat.id)

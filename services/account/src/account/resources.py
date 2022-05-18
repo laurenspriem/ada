@@ -27,6 +27,13 @@ def update_user(d_username):
     return account_interactions().update(d_username, flask.request.json).to_dict()
 
 
+@resources.route("/users/block/<d_username>", methods=["PUT"])
+def block_user(d_username):
+    account_interactions().block(d_username)
+
+    return "", 204
+
+
 @resources.route("/users/<d_username>", methods=["DELETE"])
 def delete_user(d_username):
     account_interactions().delete(d_username)
