@@ -1,5 +1,18 @@
 version: "3.9"
 services:
+
+### API GATEWAY ###
+  api_gatway:
+    image: devopsfaith/krakend:2.0.0
+    container_name: api_gatway_ct
+    volumes:
+      - ./gateway:/etc/krakend/
+    # depends_on:
+    #   - account_app
+    ports:
+      - "8080:8080"
+
+### MICROSERVICES ###
   account_app:
     build:
       context: ./services/account
@@ -222,6 +235,7 @@ services:
     volumes:
       - ./scripts/postgres.sh:/docker-entrypoint-initdb.d/postgres.sh
 
+### PUBSUB ###
   pubsub:
     image: google/cloud-sdk:latest
     command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
