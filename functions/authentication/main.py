@@ -1,14 +1,16 @@
-# pylint: disable=import-error, global-statement
+# pylint: disable=global-statement
 import logging
 import os
 
+from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 import functions_framework
-import flask
 
 from repositories import AuthenticationRepository, InvalidTokenError, NotFoundError
 from interactions import AuthenticationInteractions, InvalidCredentialsError
-from db import db
+from db import Base
 
 
 log = logging.getLogger(__name__)
@@ -16,39 +18,50 @@ log = logging.getLogger(__name__)
 authentication_repository = None
 
 
-def _init_function():
+def _connect_db():
     global authentication_repository
 
     if not authentication_repository:
-        # Create database
-        host = os.getenv("FUNCTION_DB_HOST")
-        port = os.getenv("FUNCTION_DB_PORT")
-        user = os.getenv("FUNCTION_DB_USER")
-        password = os.getenv("FUNCTION_DB_PASSWORD")
-        name = os.getenv("FUNCTION_DB_NAME")
-        socket = os.getenv("FUNCTION_DB_SOCKET")
-        instance = os.getenv("FUNCTION_DB_INSTANCE")
+        # Load config
+        db_host = os.getenv("DB_HOST")
+        db_port = os.getenv("DB_PORT")
+        db_user = os.getenv("DB_USER")
+        db_password = os.getenv("DB_PASSWORD")
+        db_socket = os.getenv("DB_SOCKET")
+        db_instance = os.getenv("DB_INSTANCE")
+        db_name = os.getenv("DB_NAME")
+        jwt_secret = os.getenv("JWT_SECRET")
 
+        # Create uri
         uri = URL.create(
             drivername="postgresql+pg8000",
-            host=host,
-            port=port,
-            username=user,
-            password=password,
-            database=name,
-            query={"unix_sock": f"{socket}/{instance}/.s.PGSQL.5432"} if socket and instance else {}
+            host=db_host,
+            port=db_port,
+            username=db_user,
+            password=db_password,
+            database=db_name,
+            query={"unix_sock": f"{db_socket}/{db_instance}/.s.PGSQL.5432"}
+            if db_socket and db_instance
+            else {},
         )
-        flask.current_app.config["SQLALCHEMY_DATABASE_URI"] = uri
-        flask.current_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-        db.init_app(flask.current_app)
-        db.create_all(app=flask.current_app)
+        # Create engine
+        engine = create_engine(uri)
 
-        # Create authentication client
-        secret = os.getenv("FUNCTION_JWT_SECRET")
+        # Create session
+        session = scoped_session(
+            sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=engine,
+            )
+        )
 
-        # Create repositories
-        authentication_repository = AuthenticationRepository(db.session, secret)
+        # Create tables
+        Base.metadata.create_all(bind=engine)
+
+        # Create repository
+        authentication_repository = AuthenticationRepository(session, jwt_secret)
 
 
 @functions_framework.http
@@ -96,4 +109,4 @@ def default_error(_):
 
 
 if __name__ == "main":
-    _init_function()
+    _connect_db()

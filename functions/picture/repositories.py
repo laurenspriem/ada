@@ -1,4 +1,3 @@
-# pylint: disable=import-error
 import hashlib
 
 from models import Metadata

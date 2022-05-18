@@ -379,9 +379,10 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Custom ###
-# Scratch file
-functions/scratch.py
-services/scratch.py
-
 # Credentials
 google-application-credentials.json
+
+# Scratch file
+functions/scratch.py
+scripts/scratch.sh
+services/scratch.py

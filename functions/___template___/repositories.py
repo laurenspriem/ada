@@ -1,14 +1,8 @@
-# pylint: disable=import-error
-import os
-import io
-import pickle
-import hashlib
+import json
+
+from google.api_core.exceptions import AlreadyExists
 
 from models import Model
-
-
-class NotFoundError(Exception):
-    pass
 
 
 class ExampleDatabaseRepository:
@@ -25,42 +19,43 @@ class ExampleDatabaseRepository:
         return model
 
 
-class ExamplePredictorRepository:
-    def __init__(self, path):
-        with open(path, "rb") as handle:
-            self._model = pickle.load(handle)
+class ExamplePubSubRepository:
+    TEST_TOPIC = "test"
 
-    def create_prediction(self, inputs):
-        if not hasattr(self, "_model") or not self._model:
-            raise NotFoundError()
+    def __init__(self, project_id, project_name, publisher):
+        self._project_id = project_id
+        self._project_name = project_name
+        self._publisher = publisher
 
-        return self._model.predict([inputs])[0]
+    def push(self, topic, message):
+        topic_path = self._ensure_topic_exists(topic)
 
+        res = self._publisher.publish(topic_path, str.encode(json.dumps(message)))
 
-class ExampleStorageRepository:
-    def __init__(self, files_path):
-        self._files_path = files_path
+        return {"message_id": res.result()}
 
-        self._ensure_exists(files_path)
+    def _ensure_topic_exists(self, topic):
+        topic_path = self._publisher.topic_path(self._project_id, topic)
 
-    def load_file(self, name):
-        with open(self._files_path + name, "rb") as handle:
-            return io.BytesIO(handle.read())
-
-    def store_file(self, file):
-        content = file.read()
-        digest = hashlib.md5(content).hexdigest()
-        extension = file.filename.split(".")[-1]
-
-        name = f"{digest}.{extension}"
-
-        with open(self._files_path + name, "wb") as handle:
-            handle.write(content)
-
-        return name
-
-    def _ensure_exists(self, path):
         try:
-            os.makedirs(os.path.dirname(path))
-        except OSError:
+            self._publisher.create_topic(name=topic_path)
+        except AlreadyExists:
             pass
+
+        return topic_path
+
+
+class ExampleWebRepository:
+    TEST_FUNCTION = "http://test:8080/api"
+
+    def __init__(self, client):
+        self._client = client
+
+    def get(self, endpoint):
+        return self._client.get(endpoint)
+
+    def post(self, endpoint, data):
+        return self._client.post(endpoint, data=data)
+
+    def put(self, endpoint, data):
+        return self._client.put(endpoint, data=data)

@@ -34,7 +34,7 @@ class AccountInteractions:
     def update(self, username, data):
         password = data["password"]
         email = data["email"]
-        return self._database_repository.update_user(username, password, email)
+        return self._database_repository.update_user(username, email, password)
 
     def update_profile(self, username, data):
         birthday = data["birthday"]
@@ -52,7 +52,7 @@ class AccountInteractions:
         street_number = data["street_number"]
         zip_code = data["zip_code"]
         city = data["city"]
-        return self._database_repository.update_user(
+        return self._database_repository.update_shippinginfo(
             username, street, street_number, zip_code, city
         )
 
@@ -61,7 +61,7 @@ class AccountInteractions:
         bids_notifications_enabled = data["bids_notifications_enabled"]
         chat_notifications_enabled = data["chat_notifications_enabled"]
         news_notifications_enabled = data["news_notifications_enabled"]
-        return self._database_repository.update_user(
+        return self._database_repository.update_notificationsettings(
             username,
             item_notifications_enabled,
             bids_notifications_enabled,
@@ -73,7 +73,12 @@ class AccountInteractions:
         iban = data["iban"]
         name = data["name"]
         bank = data["bank"]
-        return self._database_repository.update_user(username, iban, name, bank)
+        return self._database_repository.update_paymentinfo(username, iban, name, bank)
+
+    def block(self, d_username):
+        user = self._database_repository.get_user(d_username).to_dict()
+
+        self._pubsub_repository.push(self._pubsub_repository.USER_BLOCKED_TOPIC, user)
 
     def delete(self, d_username):
         return self._database_repository.delete_user(d_username)

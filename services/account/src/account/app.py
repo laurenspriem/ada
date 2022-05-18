@@ -56,12 +56,13 @@ def _connect_db():
 def _connect_pubsub():
     # Load config
     pubsub_project_id = os.getenv("PUBSUB_PROJECT_ID")
+    pubsub_project_name = __name__.split(".", maxsplit=1)[0]
 
     # Create client
     publisher = pubsub.PublisherClient()
     subscriber = pubsub.SubscriberClient()
 
-    return pubsub_project_id, publisher, subscriber
+    return pubsub_project_id, pubsub_project_name, publisher, subscriber
 
 
 def create_app():
@@ -85,7 +86,7 @@ def create_app():
     session = _connect_db()
 
     # Create pub/sub
-    project_id, publisher, subscriber = _connect_pubsub()
+    project_id, project_name, publisher, subscriber = _connect_pubsub()
 
     # Set repositories
     setattr(
@@ -95,6 +96,7 @@ def create_app():
             "database_repository": UserDatabaseRepository(session),
             "pubsub_repository": ExamplePubSubRepository(
                 project_id,
+                project_name,
                 publisher,
                 subscriber,
             ),
