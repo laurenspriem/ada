@@ -22,8 +22,9 @@ class ExampleDatabaseRepository:
 class ExamplePubSubRepository:
     TEST_TOPIC = "test"
 
-    def __init__(self, project_id, publisher):
+    def __init__(self, project_id, project_name, publisher):
         self._project_id = project_id
+        self._project_name = project_name
         self._publisher = publisher
 
     def push(self, topic, message):

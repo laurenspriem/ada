@@ -78,12 +78,17 @@ def _connect_pubsub():
     if not pubsub_repository:
         # Load config
         pubsub_project_id = os.getenv("PUBSUB_PROJECT_ID")
+        pubsub_project_name = __name__.split(".", maxsplit=1)[0]
 
         # Create client
         publisher = pubsub.PublisherClient()
 
         # Create repository
-        pubsub_repository = ExamplePubSubRepository(pubsub_project_id, publisher)
+        pubsub_repository = ExamplePubSubRepository(
+            pubsub_project_id,
+            pubsub_project_name,
+            publisher,
+        )
 
 
 def _connect_web():

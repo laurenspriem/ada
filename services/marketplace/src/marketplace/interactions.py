@@ -10,7 +10,9 @@ class ItemInteractions:
         return self._database_repository.get_item(int(item_id)).to_dict()
 
     def getlist(self, user_id):
-        return [i.to_dict() for i in self._database_repository.get_itemlist(int(user_id))]
+        return [
+            i.to_dict() for i in self._database_repository.get_itemlist(int(user_id))
+        ]
 
     def search(self, keyword):
         return [i.to_dict() for i in self._database_repository.search_item(keyword)]
@@ -76,9 +78,7 @@ class ItemInteractions:
 
         for message in messages:
             item = self._database_repository.get_item(message["item_id"])
-            
-            
-            
+
             status_str = "Sold"
 
             item = self._database_repository.update_item(
@@ -94,7 +94,7 @@ class ItemInteractions:
                 float(item.price),
                 status_str,
             ).to_dict()
-            
+
             self._pubsub_repository.push(
                 self._pubsub_repository.ITEM_UPDATE_TOPIC,
                 item,

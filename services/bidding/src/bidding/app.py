@@ -1,20 +1,14 @@
 import os
 
 from flask import Flask
-from huey import MemoryHuey
 from google.cloud import pubsub
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import HTTPException
 
-from bidding.repositories import (
-    BidDatabaseRepository,
-    ExamplePubSubRepository,
-    ExampleWebRepository,
-)
+from bidding.repositories import BidDatabaseRepository, BidPubSubRepository
 from bidding.resources import resources
-from bidding.web import WebClient
 from bidding.db import Base
 
 
@@ -62,19 +56,13 @@ def _connect_db():
 def _connect_pubsub():
     # Load config
     pubsub_project_id = os.getenv("PUBSUB_PROJECT_ID")
+    pubsub_project_name = __name__.split(".", maxsplit=1)[0]
 
     # Create client
     publisher = pubsub.PublisherClient()
     subscriber = pubsub.SubscriberClient()
 
-    return pubsub_project_id, publisher, subscriber
-
-
-def _connect_web():
-    # Create client
-    client = WebClient()
-
-    return client
+    return pubsub_project_id, pubsub_project_name, publisher, subscriber
 
 
 def create_app():
@@ -98,10 +86,7 @@ def create_app():
     session = _connect_db()
 
     # Create pub/sub
-    project_id, publisher, subscriber = _connect_pubsub()
-
-    # Create web
-    client = _connect_web()
+    project_id, project_name, publisher, subscriber = _connect_pubsub()
 
     # Set repositories
     setattr(
@@ -109,48 +94,16 @@ def create_app():
         "repositories",
         {
             "database_repository": BidDatabaseRepository(session),
-            "pubsub_repository": ExamplePubSubRepository(
+            "pubsub_repository": BidPubSubRepository(
                 project_id,
+                project_name,
                 publisher,
                 subscriber,
             ),
-            "web_repository": ExampleWebRepository(client),
         },
     )
 
     return flask
 
 
-def create_worker():
-    # Create worker
-    huey = MemoryHuey()
-
-    # Create database
-    session = _connect_db()
-
-    # Create pub/sub
-    project, publisher, subscriber = _connect_pubsub()
-
-    # Create web
-    client = _connect_web()
-
-    # Set subscriptions
-    setattr(
-        huey,
-        "repositories",
-        {
-            "database_repository": BidDatabaseRepository(session),
-            "pubsub_repository": ExamplePubSubRepository(
-                project,
-                publisher,
-                subscriber,
-            ),
-            "web_repository": ExampleWebRepository(client),
-        },
-    )
-
-    return huey
-
-
 app = create_app()
-worker = create_worker()

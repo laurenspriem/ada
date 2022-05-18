@@ -64,9 +64,7 @@ class CommunicationInteractions:
         )
 
         for message in messages:
-            chats = self._database_repository.get_chats_for_item(
-                message["id"],  # TODO(tomdewildt): update keys
-            )
+            chats = self._database_repository.get_chats_for_item(message["id"])
             for chat in chats:
                 message = Message(text="System: Item updated.")
 
@@ -87,8 +85,8 @@ class CommunicationInteractions:
 
         for message in messages:
             chats = self._database_repository.get_chats_for_item_and_user(
-                message["item_id"],  # TODO(tomdewildt): update keys
-                message["user_id"],  # TODO(tomdewildt): update keys
+                message["item_id"],
+                message["user_id"],
             )
             for chat in chats:
                 message = Message(text="System: Offer accepted.")

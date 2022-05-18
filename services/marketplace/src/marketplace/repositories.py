@@ -78,14 +78,12 @@ class ItemDatabaseRepository:
 
 
 class ItemPubSubRepository:
-    #REFUND_TOPIC = "fintet-refund"
-    #ITEM_RECEIVED_TOPIC = "fintet-item-received"
     ITEM_UPDATE_TOPIC = "jads-adaassignment-item-update"
     OFFER_ACCEPTED_TOPIC = "jads-adaassignment-offer-accepted"
-    #TRANSACTION_CANCELLED_TOPIC = "fintet-transaction-cancelled"
 
-    def __init__(self, project_id, publisher, subscriber):
+    def __init__(self, project_id, project_name, publisher, subscriber):
         self._project_id = project_id
+        self._project_name = project_name
         self._publisher = publisher
         self._subscriber = subscriber
 
@@ -134,7 +132,7 @@ class ItemPubSubRepository:
     def _ensure_subscription_exists(self, topic_path):
         subscription_path = self._subscriber.subscription_path(
             self._project_id,
-            f"{topic_path[topic_path.rindex('/')+1:]}-subscription",
+            f"{topic_path[topic_path.rindex('/')+1:]}-{self._project_name}-subscription",
         )
 
         try:
