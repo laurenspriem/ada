@@ -1,11 +1,16 @@
 version: "3.9"
 services:
-  api_gatway:
-    image: devopsfaith/krakend:2.0.0
-    volumes:
-      - ./gateway:/etc/krakend/
+  api_gateway:
+    image: nginx:latest
+    depends_on:
+      - account_app
+      - bidding_app
+      - communication_app
+      - marketplace_app
     ports:
-      - 8080:8080
+      - 8080:80
+    volumes:
+      - ./gateway/default.conf:/etc/nginx/conf.d/default.conf:ro
 
   account_app:
     build:
