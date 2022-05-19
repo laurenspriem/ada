@@ -44,7 +44,13 @@ class AccountInteractions:
         jeans_size = data["jeans_size"]
         shoe_size = data["shoe_size"]
         return self._database_repository.update_profile(
-            username, birthday, gender, height, shirt_size, jeans_size, shoe_size
+            username,
+            birthday,
+            gender,
+            height,
+            shirt_size,
+            jeans_size,
+            shoe_size,
         )
 
     def update_shippinginfo(self, username, data):
@@ -53,7 +59,11 @@ class AccountInteractions:
         zip_code = data["zip_code"]
         city = data["city"]
         return self._database_repository.update_shippinginfo(
-            username, street, street_number, zip_code, city
+            username,
+            street,
+            street_number,
+            zip_code,
+            city,
         )
 
     def update_notificationsettings(self, username, data):
