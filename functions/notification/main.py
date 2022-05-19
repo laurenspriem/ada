@@ -20,7 +20,7 @@ def _connect_notification():
 def pull_item_update_topic(event, context):
     interactions = NotificationInteractions(notification_repository)
 
-    topic = context.event_id
+    topic = "jads-adaassignment-item-update"
     data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
 
     return interactions.send_notification(topic, data)
@@ -29,7 +29,7 @@ def pull_item_update_topic(event, context):
 def pull_message_send_topic(event, context):
     interactions = NotificationInteractions(notification_repository)
 
-    topic = context.event_id
+    topic = "jads-adaassignment-message-send"
     data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
 
     return interactions.send_notification(topic, data)
@@ -38,7 +38,7 @@ def pull_message_send_topic(event, context):
 def pull_offer_accepted_topic(event, context):
     interactions = NotificationInteractions(notification_repository)
 
-    topic = context.event_id
+    topic = "jads-adaassignment-offer-accepted"
     data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
 
     return interactions.send_notification(topic, data)
@@ -47,7 +47,7 @@ def pull_offer_accepted_topic(event, context):
 def pull_user_blocked_topic(event, context):
     interactions = NotificationInteractions(notification_repository)
 
-    topic = context.event_id
+    topic = "jads-adaassignment-user-blocked"
     data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
 
     return interactions.send_notification(topic, data)
