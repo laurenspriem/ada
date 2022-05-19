@@ -17,7 +17,7 @@ class AuthenticationRepository:
         self._secret = secret
 
     def get_user(self, username):
-        user = self._session.query(User).get(username)
+        user = self._session.query(User).filter(User.username == username).first()
         if not user:
             raise NotFoundError()
 
